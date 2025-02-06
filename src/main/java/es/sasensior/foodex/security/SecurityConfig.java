@@ -56,17 +56,16 @@ public class SecurityConfig {
         	.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))		// Indicamos qué hacer en caso de usuario no autorizado
         	.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) 			// Permitir el uso de iframes
         	.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	// El servidor no establece sesiones
-            
             .authorizeHttpRequests(auth ->
             
            
                 auth.requestMatchers("/auth/signin/**").permitAll()					// Permite el acceso al controlador que entrega tokens
-                    .requestMatchers("/WEB-INF/**").permitAll() 					// Permite acceso a JSP en WEB-INF    
+//                    .requestMatchers("/WEB-INF/**").permitAll() 					// Permite acceso a JSP en WEB-INF    
                     .requestMatchers("/img/**", "/css/**", "/js/**").permitAll() 	// Permite acceso a recursos estáticos
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()			// Permite cualquier petición con el verbo OPTIONS
-                    .requestMatchers("/app/**").permitAll()							// Permite el acceso a la aplicación JSP
+//                    .requestMatchers("/app/**").permitAll()						// Permite el acceso a la aplicación JSP
                     .requestMatchers("/h2-console/**").permitAll()					// Permite el acceso a la consola H2
-                    .anyRequest().authenticated()									// El resto requiere estar autenticado   
+                    .anyRequest().authenticated()									// El resto requiere estar autenticado
             );
         
         http.authenticationProvider(authenticationProvider());						// Indicamos quién es el proveedor de autenticación. Quién decide quien pasa y quien no 
