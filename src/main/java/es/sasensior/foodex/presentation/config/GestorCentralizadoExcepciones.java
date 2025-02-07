@@ -13,7 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandler{
+public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandler {
 
 
 	// **********************************************************************************
@@ -28,7 +28,7 @@ public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandle
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("No existe end-point para atender esta petición.");
+		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("No existe end-point para atender esta petición. ¿Estás usando el verbo correcto?");
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(httpErrorCustomizado);
 	}
 
@@ -58,7 +58,7 @@ public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandle
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleException(Exception ex){
 	
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("Se ha producido un error en el servidor.");
+		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("Se ha producido un error inesperado en el servidor.");
 		
 		return ResponseEntity.internalServerError().body(httpErrorCustomizado);
 	}

@@ -59,7 +59,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth ->
             
            
-                auth.requestMatchers("/auth/signin/**").permitAll()					// Permite el acceso al controlador que entrega tokens
+                auth.requestMatchers("/auth/signin/**", "/auth/signup/**").permitAll()
 //                    .requestMatchers("/WEB-INF/**").permitAll() 					// Permite acceso a JSP en WEB-INF    
                     .requestMatchers("/img/**", "/css/**", "/js/**").permitAll() 	// Permite acceso a recursos estáticos
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()			// Permite cualquier petición con el verbo OPTIONS

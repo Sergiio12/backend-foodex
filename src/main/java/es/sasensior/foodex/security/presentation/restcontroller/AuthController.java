@@ -1,4 +1,4 @@
-package es.sasensior.foodex.security.presentation;
+package es.sasensior.foodex.security.presentation.restcontroller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import es.sasensior.foodex.presentation.config.PresentationException;
 import es.sasensior.foodex.security.JwtUtils;
 import es.sasensior.foodex.security.UserDetailsImpl;
+import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import es.sasensior.foodex.security.payloads.JwtResponse;
 import es.sasensior.foodex.security.payloads.LoginRequest;
+import es.sasensior.foodex.security.payloads.SignupRequest;
+import es.sasensior.foodex.security.services.AuthRegisterService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 
 @CrossOrigin
 @RestController
@@ -34,6 +38,10 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    @Getter
+    private AuthRegisterService authRegisterService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -48,7 +56,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
     	} catch(Exception e) {
     		logger.error("Error de autenticación para el usuario {}", loginRequest.getUsername());
-    		throw new PresentationException("bad credentials", HttpStatus.UNAUTHORIZED);
+    		throw new PresentationException("credenciales invalidas", HttpStatus.UNAUTHORIZED);
     	}
         
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,4 +74,30 @@ public class AuthController {
                 userDetails.getEmail(),
                 roles));
     }
+    
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest) {
+    	
+    	if(authRegisterService.existsUserByEmail(signupRequest.getEmail())) {
+    		throw new PresentationException("el correo electrónico ya está registrado.", HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	if(authRegisterService.existsUserByUsername(signupRequest.getUsername())) {
+    		throw new PresentationException("el nombre de usuario ya está registrado.", HttpStatus.BAD_REQUEST);
+    	}
+    	
+    	UsuarioPL usuario = new UsuarioPL();
+        usuario.setUsername(signupRequest.getUsername());
+        usuario.setEmail(signupRequest.getEmail());
+        usuario.setFirstName(signupRequest.getFirstName());
+        usuario.setLastName(signupRequest.getLastName());
+        usuario.setPassword(signupRequest.getPassword());
+        usuario.setEnabled(true);
+        
+        authRegisterService.guardarUsuarioBBDD(usuario);
+    	
+        return ResponseEntity.ok("usuario creado con éxito.");
+        
+    }
+    
 }
