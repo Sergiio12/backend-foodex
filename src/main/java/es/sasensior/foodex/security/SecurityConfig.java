@@ -1,5 +1,6 @@
 package es.sasensior.foodex.security;
 
+// Importaciones necesarias para configurar la seguridad en Spring Boot
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,61 +19,97 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-@Configuration
-@EnableWebSecurity
+/**
+ * Esta clase configura la seguridad de la aplicación utilizando Spring Security.
+ */
+@Configuration // Indica que esta clase proporciona configuración a la aplicación.
+@EnableWebSecurity // Habilita la seguridad en la aplicación.
 public class SecurityConfig {
 
-	@Autowired
-	private UserDetailsService userDetailsService;
+    // Inyecta el servicio que maneja la lógica de obtención de usuarios desde la base de datos.
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-	@Autowired
-	private JwtAuthEntryPoint unauthorizedHandler;
+    // Inyecta la clase que maneja los errores de autenticación no autorizada.
+    @Autowired
+    private JwtAuthEntryPoint unauthorizedHandler;
 
-	@Bean
-	JwtAuthTokenFilter authenticationTokenFilterBean() throws Exception {
-		return new JwtAuthTokenFilter();
-	}
+    /**
+     * Define un filtro que intercepta las peticiones y extrae el token JWT para validar la autenticación.
+     */
+    @Bean
+    JwtAuthTokenFilter authenticationTokenFilterBean() throws Exception {
+        return new JwtAuthTokenFilter();
+    }
 
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-		return authConfig.getAuthenticationManager();
-	}
+    /**
+     * Configura el AuthenticationManager, que se encarga de la autenticación de usuarios.
+     */
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	    
-	@Bean
-	MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
-		return new MvcRequestMatcher.Builder(introspector);
-	}
-	
-	@Bean
+    /**
+     * Define el encriptador de contraseñas. Se usa BCrypt para hashear las contraseñas de los usuarios.
+     */
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * Configura un constructor para gestionar rutas con seguridad en Spring MVC.
+     */
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
+    /**
+     * Configura las reglas de seguridad para las peticiones HTTP en la aplicación.
+     */
+    @Bean
     SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable()) // Deshabilita la protección CSRF (No recomendado en producción sin medidas adicionales).
             
-        	.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))		// Indicamos qué hacer en caso de usuario no autorizado
-        	.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) 			// Permitir el uso de iframes
-        	.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))	// El servidor no establece sesiones
+            // Configura el manejo de excepciones de autenticación.
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            
+            // Permite que los frames de la H2-console se carguen correctamente en la misma página.
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+            
+            // Define la política de sesiones como STATELESS (sin sesiones, ya que se usa JWT).
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            
+            // Configura las reglas de acceso a los endpoints de la aplicación.
             .authorizeHttpRequests(auth ->
-            
-           
-                auth.requestMatchers("/auth/signin/**", "/auth/signup/**").permitAll()
-//                    .requestMatchers("/WEB-INF/**").permitAll() 					// Permite acceso a JSP en WEB-INF    
-                    .requestMatchers("/img/**", "/css/**", "/js/**").permitAll() 	// Permite acceso a recursos estáticos
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()			// Permite cualquier petición con el verbo OPTIONS
-//                    .requestMatchers("/app/**").permitAll()						// Permite el acceso a la aplicación JSP
-                    .requestMatchers("/h2-console/**").permitAll()					// Permite el acceso a la consola H2
-                    .anyRequest().authenticated()									// El resto requiere estar autenticado
-            );
-        
-        http.authenticationProvider(authenticationProvider());						// Indicamos quién es el proveedor de autenticación. Quién decide quien pasa y quien no 
-        http.addFilterBefore(authenticationTokenFilterBean(), 
-        					 UsernamePasswordAuthenticationFilter.class);			// Incluimos el filtro de seguridad dentro de la cadena de filtros.
 
-        return http.build();																																																																																																																					
+                // Permite el acceso público a los endpoints de autenticación y registro.
+                auth.requestMatchers("/auth/signin/**", "/auth/signup/**").permitAll()
+                
+                // Permite el acceso público a los recursos internos (imágenes, CSS, JS).
+                .requestMatchers("/WEB-INF/**").permitAll()
+                .requestMatchers("/img/**", "/css/**", "/js/**").permitAll()
+
+                // Permite el acceso a las peticiones OPTIONS (necesarias para CORS).
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                // Permite el acceso público a la consola de H2 (solo en desarrollo).
+                .requestMatchers("/h2-console/**").permitAll()
+
+                // Todas las demás peticiones requieren autenticación.
+                .anyRequest().authenticated()
+            );
+
+        // Configura el proveedor de autenticación que valida los usuarios en la base de datos.
+        http.authenticationProvider(authenticationProvider());
+
+        // Agrega el filtro para interceptar las peticiones y validar el token JWT antes de que lleguen al controlador.
+        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
     // *************************************************************************************
@@ -80,13 +117,17 @@ public class SecurityConfig {
     // PRIVATE METHODS
     //
     // *************************************************************************************
-	
-	private DaoAuthenticationProvider authenticationProvider() {
 
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService);
-		authProvider.setPasswordEncoder(passwordEncoder());
+    /**
+     * Configura el proveedor de autenticación basado en la base de datos (DAO).
+     * Usa BCrypt para verificar las contraseñas almacenadas de forma segura.
+     */
+    private DaoAuthenticationProvider authenticationProvider() {
 
-		return authProvider;
-	}
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService); // Usa el servicio de usuario para obtener detalles de autenticación.
+        authProvider.setPasswordEncoder(passwordEncoder()); // Usa BCrypt para verificar contraseñas.
+
+        return authProvider;
+    }
 }

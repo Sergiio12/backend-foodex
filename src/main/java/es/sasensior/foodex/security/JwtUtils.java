@@ -18,52 +18,63 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-@Component
+@Component //Indica que es un bean de spring y que, por tanto, puede ser inyectado en otras partes con @Autowired.
 public class JwtUtils {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${foodex.app.jwt-secret}")
-    private String jwtSecret;
+    private String jwtSecret; //Clave secreta para firmar los tokens.
 
     @Value("${foodex.app.jwt-expiration-ms}")
-    private int jwtExpirationMs;
+    private int jwtExpirationMs; //Tiempo de expiración del token.
 
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal(); //Obtiene datos del usuario autenticado.
 
-        List<String> roles = userDetailsImpl.getAuthorities().stream().map(x -> x.toString()).toList();
+        List<String> roles = userDetailsImpl.getAuthorities().stream().map(x -> x.toString()).toList(); //Extrae todos los roles del usuario:
+        
         String nombreCompleto = userDetailsImpl.getFirstName() + " " + userDetailsImpl.getLastName();
 
         return Jwts.builder()
-                .setSubject(userDetailsImpl.getUsername())
-                .claim("roles", roles)
-                .claim("nombre", nombreCompleto)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(key(), SignatureAlgorithm.HS256)
-                .compact();
+                .setSubject(userDetailsImpl.getUsername()) //Define el nombre de usuario como el dueño del token.
+                .claim("roles", roles) //Añade los roles al token.
+                .claim("nombre", nombreCompleto) //Añade el nombre completo al token.
+                .setIssuedAt(new Date(System.currentTimeMillis())) //Fecha de emisión.
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) //Fecha de expiracion
+                .signWith(key(), SignatureAlgorithm.HS256) //Firma con clave secreta.
+                .compact(); //Construye el token final con formado String
     }
-
+    
+    /**
+     * Toma un token JWT y extrae el nombre de usuario (subject en el payload del token).
+     * @param token es el token que toma
+     * @return el nombre del usuario al que pertenece ese token
+     */
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key()).build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
+    /**
+     * Este método verifica si un token JWT es válido.
+     * @param token es el token que toma por parámetros.
+     * @return si el token es válido o no.
+     */
     public boolean validateJwtToken(String token) {
 
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(token);
             return true;
         } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
+            logger.error("Invalid JWT token: {}", e.getMessage()); //Token mal formado (cortado o modificado).
         } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
+            logger.error("JWT token is expired: {}", e.getMessage()); //Token expirado.
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
+            logger.error("JWT token is unsupported: {}", e.getMessage()); //Algoritmo de firma no soportado.
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            logger.error("JWT claims string is empty: {}", e.getMessage()); //Token vacío
         }
 
         return false;
@@ -75,6 +86,10 @@ public class JwtUtils {
     //
     // *************************************************************************************
    
+    /**
+     * Convierte la clave secreta de String a un Key utilizando BASE64.decode(). Es necesario porque JWT usa claves Key en formato binario, no cadenas de texto.
+     * @return la clave convertida.
+     */
     private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }

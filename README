@@ -1,0 +1,3 @@
+Spring security:
+	- El token que proporciona el backend NO lo guarda él mismo, sino que se encargará el cliente de ello (e.g Angular) de almacenarlo en el "local storage" o "session storage".
+	- Por tanto, el backend solo se encargará de emitir y validar el token, nada más.

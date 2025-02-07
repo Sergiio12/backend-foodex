@@ -12,7 +12,7 @@ public class JwtResponse implements Serializable {
 	private String token;
 	private Long id;
 	private String username;
-	String email;
+	private String email;
 	private List<String> roles;
 	
 	public JwtResponse(String token, Long id, String username, String email, List<String> roles) {
