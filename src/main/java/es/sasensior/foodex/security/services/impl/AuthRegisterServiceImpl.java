@@ -28,7 +28,7 @@ public class AuthRegisterServiceImpl implements AuthRegisterService {
 	}
 	
 	@Override
-	public void guardarUsuarioBBDD(UsuarioPL usuario) {
+	public void registerUser(UsuarioPL usuario) {
 		usuarioPLRepository.save(usuario);
 	}
 

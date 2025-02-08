@@ -89,26 +89,29 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         Map<String, String> errors = new HashMap<>();
+        Map<String, Object> responseBody = new HashMap<>();
 
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> {
-                errors.put(error.getObjectName(), error.getDefaultMessage());
+            bindingResult.getFieldErrors().forEach(fieldError -> {
+            	//Aqui
             });
-            return ResponseEntity.badRequest().body(errors);
+        	
+            return ResponseEntity.badRequest().body(responseBody);
         }
 
-        // Lógica de negocio: verificación de la existencia de usuario o correo
         if (authRegisterService.existsUserByEmail(signupRequest.getEmail())) {
+        	responseBody.put("errors", errors);
             errors.put("email", "El correo electrónico ya está registrado.");
         }
 
         if (authRegisterService.existsUserByUsername(signupRequest.getUsername())) {
+        	responseBody.put("errors", errors);
             errors.put("username", "El nombre de usuario ya está registrado.");
         }
 
         // Si se encontraron errores, los devolvemos
         if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(responseBody);
         }
 
         // Crear el usuario
@@ -123,9 +126,9 @@ public class AuthController {
 
         usuario.setEnabled(true);
 
-        authRegisterService.guardarUsuarioBBDD(usuario);
+        authRegisterService.registerUser(usuario);
 
-        return ResponseEntity.ok("Usuario creado con éxito.");
+        return ResponseEntity.ok("Usuario registrado con éxito.");
     }
 
 }

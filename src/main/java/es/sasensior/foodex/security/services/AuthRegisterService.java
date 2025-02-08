@@ -8,6 +8,6 @@ public interface AuthRegisterService {
 	
 	boolean existsUserByUsername(String username);
 	
-	void guardarUsuarioBBDD(UsuarioPL usuario);
+	void registerUser(UsuarioPL usuario);
 
 }

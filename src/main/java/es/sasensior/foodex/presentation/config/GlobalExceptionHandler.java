@@ -1,5 +1,7 @@
 package es.sasensior.foodex.presentation.config;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,23 +15,27 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
 	// **********************************************************************************
 
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("No se puede parsear el objeto JSON");
-		return ResponseEntity.badRequest().body(httpErrorCustomizado);
+		String respuesta = "No se puede leer el objeto JSON.";
+		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta, LocalDateTime.now());
+		return ResponseEntity.badRequest().body(apiResponseBody);
 	}
 
 	// **********************************************************************************
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("No existe end-point para atender esta petición. ¿Estás usando el verbo correcto?");
-		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(httpErrorCustomizado);
+		
+		String respuesta = "No existe end-point para atender esta petición. ¿Estás usando el verbo correcto?";
+		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta, LocalDateTime.now());
+		
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(apiResponseBody);
 	}
 
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -38,29 +44,30 @@ public class GestorCentralizadoExcepciones extends ResponseEntityExceptionHandle
 		String tipoRequerido = ex.getRequiredType().getSimpleName();
 		String tipoEntrante = ex.getValue().getClass().getSimpleName();
 		
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("El valor [" + ex.getValue() + "] es de tipo [" + tipoEntrante+ "]. Se requiere un tipo [" + tipoRequerido + "]");
+		String respuesta = "El valor [" + ex.getValue() + "] es de tipo [" + tipoEntrante + "]. Se requiere un tipo [" + tipoRequerido + "]";
+		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta, LocalDateTime.now());
 		
-		return ResponseEntity.badRequest().body(httpErrorCustomizado);
+		return ResponseEntity.badRequest().body(apiResponseBody);
 	}
 	
 	// **********************************************************************************
 	
-	@ExceptionHandler(PresentationException.class)
-	public ResponseEntity<Object> handlePresentationException(PresentationException ex){
-	
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado(ex.getMessage());
+	@ExceptionHandler(PresentationException.class) 
+	public ResponseEntity<Object> handlePresentationException(PresentationException ex) {
 		
-		return new ResponseEntity<>(httpErrorCustomizado, ex.getHttpStatus());
+		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, ex.getMessage(), LocalDateTime.now());
+		
+		return new ResponseEntity<>(apiResponseBody, ex.getHttpStatus());
+		
 	}
-	
-	// **********************************************************************************
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleException(Exception ex){
-	
-		HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado("Se ha producido un error inesperado en el servidor.");
 		
-		return ResponseEntity.internalServerError().body(httpErrorCustomizado);
+		String respuesta = "Ha ocurrido un error inesperado en el servidor.";
+		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta, LocalDateTime.now());
+		
+		return ResponseEntity.internalServerError().body(apiResponseBody);
 	}
 	
 
