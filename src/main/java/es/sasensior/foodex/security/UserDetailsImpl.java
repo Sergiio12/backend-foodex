@@ -23,30 +23,27 @@ public class UserDetailsImpl implements UserDetails {
     
     private static final long serialVersionUID = 1L; // Versión para la serialización.
 
-    // Atributos del usuario
     private Long id;
+    
     private String username;
     
     @JsonIgnore // Evita que la contraseña se incluya en las respuestas JSON.
     private String password;
     
     private String firstName;
+    
     private String lastName;
+    
     private String email;
+    
     private boolean enabled;
+    
     private Collection<? extends GrantedAuthority> authorities; // Lista de roles/permisos.
 
     /**
      * Constructor privado para la creación de instancias de UserDetailsImpl.
      */
-    private UserDetailsImpl(Long id,
-                            String username,
-                            String password,
-                            String firstName,
-                            String lastName,
-                            String email,
-                            boolean enabled,
-                            Collection<? extends GrantedAuthority> authorities) {
+    private UserDetailsImpl(Long id, String username, String password, String firstName, String lastName, String email, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;

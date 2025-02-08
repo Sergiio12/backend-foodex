@@ -16,23 +16,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter { 
-	
-	/**
-	 * Este filtro se ejecuta antes de procesar cada petición, revisando si hay un token JWT válido en los headers.
-	 * Solamente se ejecuta una vez por petición (De ahí el que implemente 'OncePerRequestFilter').
-	 */
 
 	 @Autowired
-	 private JwtUtils jwtUtils; //Esto se utiliza para extraer información del token y validarla.
+	 private JwtUtils jwtUtils;
 	 
 	 @Autowired
-	 private UserDetailsServiceImpl userDetailsService; //Con esto cargamos los datos del usuario en la base de datos.
+	 private UserDetailsServiceImpl userDetailsService;
 	 
-	 //Cada vez que hay una petición, spring ejecuta esto.
 	 @Override
 	 protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		 
 		 try {
+			 
+			 String requestURI = request.getRequestURI();
 			 
 			 String jwt = parseJwt(request); //Obtiene el token de la cabecera de autentificación.
 			 
@@ -55,7 +51,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 		 filterChain.doFilter(request, response);
 		 
 	 }
-
+	 
+	 @Override
+	 public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		 String path = request.getServletPath();
+		 return path.startsWith("/auth/signup");
+	 }
+	 
 	 // *************************************************************************************
 	 //
 	 // PRIVATE METHODS

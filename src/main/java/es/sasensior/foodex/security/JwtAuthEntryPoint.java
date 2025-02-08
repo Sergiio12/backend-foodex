@@ -19,8 +19,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
-	
-	//Esta clase se usa para cuando usuario quiere acceder a un recurso restringido, se le lanza un error.
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthEntryPoint.class);
     
@@ -31,11 +29,11 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
     	
     	logger.error("Unauthorized error: {}", authException.getMessage());
-    
+    	
     	HttpErrorCustomizado httpErrorCustomizado = new HttpErrorCustomizado(authException.getMessage());
     	
-    	response.setContentType("application/json"); //Indica que la respuesta será en formato JSON.
-    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //Establece el código de error 401 (Unauthorized).
+    	response.setContentType("application/json");
+    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     	
     	//Con esto básicamente convertimos un objeto JSON a ObjectMapper.
     	PrintWriter out = response.getWriter();

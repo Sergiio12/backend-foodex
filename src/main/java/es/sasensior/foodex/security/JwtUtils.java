@@ -18,7 +18,7 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-@Component //Indica que es un bean de spring y que, por tanto, puede ser inyectado en otras partes con @Autowired.
+@Component
 public class JwtUtils {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
@@ -31,7 +31,7 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal(); //Obtiene datos del usuario autenticado.
+        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 
         List<String> roles = userDetailsImpl.getAuthorities().stream().map(x -> x.toString()).toList(); //Extrae todos los roles del usuario:
         

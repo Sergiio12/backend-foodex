@@ -1,6 +1,5 @@
 package es.sasensior.foodex.security;
 
-// Importaciones necesarias para la gestión de usuarios en Spring Security
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
