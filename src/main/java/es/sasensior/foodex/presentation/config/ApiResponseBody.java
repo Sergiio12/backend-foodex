@@ -15,22 +15,30 @@ public class ApiResponseBody {
 	private final String message;
 	private final LocalDateTime timestamp;
 	private final Object data;
-	private final List<ErrorDetail> lErrors;
+	private final List<ErrorDetail> errors;
 
-	public ApiResponseBody(ResponseStatus status, String message, LocalDateTime timestamp) {
+	public ApiResponseBody(ResponseStatus status, String message) {
 		this.status = status.toString().toLowerCase();
 		this.message = message;
-		this.timestamp = timestamp;
+		this.timestamp = LocalDateTime.now();
 		this.data = null;
-		this.lErrors = null;
+		this.errors = null;
 	}
 	
-	public ApiResponseBody(ResponseStatus status, String message, LocalDateTime timestamp, Object data, List<ErrorDetail> lErrors) {
+	public ApiResponseBody(ResponseStatus status, String message, Object data, List<ErrorDetail> lErrors) {
 		this.status = status.toString().toLowerCase();
 		this.message = message;
-		this.timestamp = null;
+		this.timestamp = LocalDateTime.now();
 		this.data = data;
-		this.lErrors = lErrors;
+		this.errors = lErrors;
 	}
 	
+	public ApiResponseBody(ResponseStatus status, String message, Object data) {
+		this.status = status.toString().toLowerCase();
+		this.message = message;
+		this.timestamp = LocalDateTime.now();
+		this.data = data;
+		this.errors = null;
+	}
+
 }

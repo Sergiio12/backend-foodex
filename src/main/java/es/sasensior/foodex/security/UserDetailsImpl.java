@@ -1,6 +1,5 @@
 package es.sasensior.foodex.security;
 
-// Importaciones necesarias para manejar la seguridad en Spring Security
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,21 +23,16 @@ public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L; // Versión para la serialización.
 
     private Long id;
-    
     private String username;
     
     @JsonIgnore // Evita que la contraseña se incluya en las respuestas JSON.
     private String password;
     
     private String firstName;
-    
     private String lastName;
-    
     private String email;
-    
     private boolean enabled;
-    
-    private Collection<? extends GrantedAuthority> authorities; // Lista de roles/permisos.
+    private Collection<? extends GrantedAuthority> authorities;
 
     /**
      * Constructor privado para la creación de instancias de UserDetailsImpl.

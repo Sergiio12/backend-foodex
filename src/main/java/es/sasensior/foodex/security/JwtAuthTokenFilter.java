@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,10 +43,13 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 	             
 	             SecurityContextHolder.getContext().setAuthentication(authentication); //Guarda la autenticación en el contexto de seguridad.
 			 }
+			 
+		 } catch(UsernameNotFoundException e) {
+			 logger.error("No se puede identificar al usuario del token proporcionado: ", e);
 		 
 		 } catch (Exception e) { //¿Es el token inválido o ha expirado?
+			 logger.error("No se puede establecer la autenticación del usuario: ", e);
 			 
-			 logger.error("Cannot set user authentication: ", e);
 		 }
 		 
 		 filterChain.doFilter(request, response);

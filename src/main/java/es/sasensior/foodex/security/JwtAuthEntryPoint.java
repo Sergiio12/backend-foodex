@@ -2,7 +2,6 @@ package es.sasensior.foodex.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +29,9 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
     	
-    	logger.error("Unauthorized error: {}", authException.getMessage());
+    	logger.error("Error de autenticación: {}", authException.getMessage());
     	
-    	ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, authException.getMessage(), LocalDateTime.now());
+    	ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, "Se requiere autenticación para acceder a este recurso.");
     	
     	response.setContentType("application/json");
     	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

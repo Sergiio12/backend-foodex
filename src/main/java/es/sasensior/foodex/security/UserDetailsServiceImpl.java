@@ -13,10 +13,9 @@ import es.sasensior.foodex.security.integration.repositories.UsuarioPLRepository
  * Implementación del servicio de usuario de Spring Security.
  * Esta clase se encarga de obtener los detalles del usuario desde la base de datos.
  */
-@Service // Marca esta clase como un servicio gestionado por Spring.
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    // Inyección del repositorio que permite acceder a los usuarios en la base de datos.
     @Autowired
     private UsuarioPLRepository usuarioPLRepository;
 
@@ -32,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // Busca el usuario en la base de datos a través del repositorio.
         UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username " + username));
 
         // Convierte el usuario obtenido en una instancia de UserDetailsImpl para que Spring Security pueda manejarlo.
         return UserDetailsImpl.build(usuarioPL);

@@ -17,6 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 
 @Component
 public class JwtUtils {
@@ -75,6 +76,8 @@ public class JwtUtils {
             logger.error("JWT token is unsupported: {}", e.getMessage()); //Algoritmo de firma no soportado.
         } catch (IllegalArgumentException e) {
             logger.error("JWT claims string is empty: {}", e.getMessage()); //Token vacío
+        } catch(SignatureException e) {
+        	logger.error("JWT signature does not match: {}", e.getMessage());
         }
 
         return false;

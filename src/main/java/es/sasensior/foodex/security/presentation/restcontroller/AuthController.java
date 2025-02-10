@@ -1,8 +1,7 @@
 package es.sasensior.foodex.security.presentation.restcontroller;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,7 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.sasensior.foodex.presentation.config.PresentationException;
+import es.sasensior.foodex.presentation.config.ApiResponseBody;
+import es.sasensior.foodex.presentation.config.ErrorDetail;
+import es.sasensior.foodex.presentation.config.ResponseStatus;
 import es.sasensior.foodex.security.JwtUtils;
 import es.sasensior.foodex.security.UserDetailsImpl;
 import es.sasensior.foodex.security.integration.model.UsuarioPL;
@@ -30,8 +32,9 @@ import es.sasensior.foodex.security.payloads.JwtResponse;
 import es.sasensior.foodex.security.payloads.LoginRequest;
 import es.sasensior.foodex.security.payloads.SignupRequest;
 import es.sasensior.foodex.security.services.AuthRegisterService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 
 @CrossOrigin
 @RestController
@@ -42,17 +45,18 @@ public class AuthController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Getter
     private AuthRegisterService authRegisterService;
 
     @Autowired
     private JwtUtils jwtUtils;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+    public ResponseEntity<ApiResponseBody> authenticate(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = null;
 
         try {
@@ -62,7 +66,7 @@ public class AuthController {
         } catch(Exception e) {
             // Si la autenticación falla, registra el error y lanza una excepción con código 401 (Unauthorized)
             logger.error("Error de autenticación para el usuario {}", loginRequest.getUsername());
-            throw new PresentationException("Credenciales inválidas", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseBody(ResponseStatus.ERROR, "Credenciales inválidas."));
         }
 
         // Guarda la autenticación en el contexto de seguridad de Spring
@@ -79,56 +83,62 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         // Devuelve el token JWT y los datos del usuario autenticado en la respuesta
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+        JwtResponse jwtResponse = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
+        return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Autenticación exitosa.", jwtResponse, null));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
-        Map<String, Object> responseBody = new HashMap<>();
+    public ResponseEntity<ApiResponseBody> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+    	List<ErrorDetail> errors = new ArrayList<>();
 
+        //Lo primero, validamos que los campos estén bien.
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(fieldError -> {
-            	//Aqui
+            	errors.add(new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()));
             });
         	
-            return ResponseEntity.badRequest().body(responseBody);
+            return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de validación en los campos de registro.", null, errors));
         }
 
         if (authRegisterService.existsUserByEmail(signupRequest.getEmail())) {
-        	responseBody.put("errors", errors);
-            errors.put("email", "El correo electrónico ya está registrado.");
+        	errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
         }
 
         if (authRegisterService.existsUserByUsername(signupRequest.getUsername())) {
-        	responseBody.put("errors", errors);
-            errors.put("username", "El nombre de usuario ya está registrado.");
+        	errors.add(new ErrorDetail("username", "Ese nombre de usuario ya está registrado en nuestro sistema."));
         }
 
-        // Si se encontraron errores, los devolvemos
+        //Si se encontraron errores con el email y el usuario, los devolvemos
         if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(responseBody);
+            return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de registro.", null, errors));
         }
 
-        // Crear el usuario
+        //¿Todo correcto? Pues creamos al usuario
         UsuarioPL usuario = new UsuarioPL();
         usuario.setUsername(signupRequest.getUsername());
         usuario.setEmail(signupRequest.getEmail());
         usuario.setFirstName(signupRequest.getFirstName());
         usuario.setLastName(signupRequest.getLastName());
         
-        String encodedPassword = new BCryptPasswordEncoder().encode(signupRequest.getPassword());
+        String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
         usuario.setPassword(encodedPassword);
-
         usuario.setEnabled(true);
 
         authRegisterService.registerUser(usuario);
 
-        return ResponseEntity.ok("Usuario registrado con éxito.");
+        return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Registro exitoso."));
     }
-
+    
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponseBody> logout(HttpServletRequest request, HttpServletResponse response) {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    	
+    	if(auth != null) {
+    		new SecurityContextLogoutHandler().logout(request, response, auth);
+    	}
+    	
+    	return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Sesión cerrada con éxito."));
+    	
+    }
+    
 }
