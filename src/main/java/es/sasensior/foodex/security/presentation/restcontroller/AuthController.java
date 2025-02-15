@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import es.sasensior.foodex.presentation.config.ApiResponseBody;
 import es.sasensior.foodex.presentation.config.ErrorDetail;
+import es.sasensior.foodex.presentation.config.PresentationException;
 import es.sasensior.foodex.presentation.config.ResponseStatus;
 import es.sasensior.foodex.security.JwtUtils;
 import es.sasensior.foodex.security.UserDetailsImpl;
@@ -31,7 +32,7 @@ import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import es.sasensior.foodex.security.payloads.JwtResponse;
 import es.sasensior.foodex.security.payloads.LoginRequest;
 import es.sasensior.foodex.security.payloads.SignupRequest;
-import es.sasensior.foodex.security.services.AuthRegisterService;
+import es.sasensior.foodex.security.services.UsuarioPLService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -50,23 +51,23 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthRegisterService authRegisterService;
+    private UsuarioPLService usuarioPLRepository;
 
     @Autowired
     private JwtUtils jwtUtils;
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponseBody> authenticate(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticate(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = null;
 
         try {
             // Autentica al usuario con el nombre de usuario y contraseña proporcionados
-            authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         } catch(Exception e) {
             // Si la autenticación falla, registra el error y lanza una excepción con código 401 (Unauthorized)
             logger.error("Error de autenticación para el usuario {}", loginRequest.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseBody(ResponseStatus.ERROR, "Credenciales inválidas."));
+            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseBody(ResponseStatus.ERROR, "Credenciales inválidas."));
+            throw new PresentationException.Builder(HttpStatus.UNAUTHORIZED, "Credenciales inválidas.").build();
         }
 
         // Guarda la autenticación en el contexto de seguridad de Spring
@@ -88,7 +89,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseBody> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
     	List<ErrorDetail> errors = new ArrayList<>();
 
         //Lo primero, validamos que los campos estén bien.
@@ -97,20 +98,22 @@ public class AuthController {
             	errors.add(new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()));
             });
         	
-            return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de validación en los campos de registro.", null, errors));
+            //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de validación en los campos de registro.", null, errors));
+            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de validación en los campos de registro.").errors(errors).build();
         }
 
-        if (authRegisterService.existsUserByEmail(signupRequest.getEmail())) {
+        if (usuarioPLRepository.existsUserByEmail(signupRequest.getEmail())) {
         	errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
         }
 
-        if (authRegisterService.existsUserByUsername(signupRequest.getUsername())) {
+        if (usuarioPLRepository.existsUserByUsername(signupRequest.getUsername())) {
         	errors.add(new ErrorDetail("username", "Ese nombre de usuario ya está registrado en nuestro sistema."));
         }
 
         //Si se encontraron errores con el email y el usuario, los devolvemos
         if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de registro.", null, errors));
+              //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de registro.", null, errors));
+        	  throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de registro").errors(errors).build();
         }
 
         //¿Todo correcto? Pues creamos al usuario
@@ -124,7 +127,7 @@ public class AuthController {
         usuario.setPassword(encodedPassword);
         usuario.setEnabled(true);
 
-        authRegisterService.registerUser(usuario);
+        usuarioPLRepository.register(usuario);
 
         return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Registro exitoso."));
     }

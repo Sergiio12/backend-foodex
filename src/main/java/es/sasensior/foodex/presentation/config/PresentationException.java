@@ -1,0 +1,51 @@
+package es.sasensior.foodex.presentation.config;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+
+@Getter
+public class PresentationException extends RuntimeException {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private final HttpStatus httpSatus;
+	private final ApiResponseBody apiResponseBody;
+	
+	private PresentationException(Builder builder) {
+		super(builder.message);
+		this.httpSatus = builder.httpStatus;
+		this.apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, builder.message, builder.data, builder.errors);
+	}
+	
+	//Creamos clase interna.
+	public static class Builder {
+		private HttpStatus httpStatus;
+		private String message;
+		private Object data;
+		private List<ErrorDetail> errors;
+		
+		public Builder(HttpStatus httpStatus, String message) {
+			this.httpStatus = httpStatus;
+			this.message = message;
+		}
+		
+		public Builder data(Object data) {
+			this.data = data;
+			return this;
+		}
+		
+		public Builder errors(List<ErrorDetail> errors) {
+			this.errors = errors;
+			return this;
+		}
+		
+		public PresentationException build() {
+			return new PresentationException(this);
+		}
+		
+	}
+
+}

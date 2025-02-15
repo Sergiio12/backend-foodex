@@ -4,7 +4,7 @@
 -- 
 -- ******************************************************
 
-CREATE SEQUENCE "PERSONA_SEQ"
+CREATE SEQUENCE "USUARIO_SEQ"
 	MINVALUE 1
 	MAXVALUE 999999999
 	INCREMENT BY 50
@@ -43,6 +43,9 @@ CREATE TABLE USER_ROLES (
     ID_USER                     	BIGINT              NOT NULL,
     ID_ROL                      	BIGINT              NOT NULL,
     
-    FOREIGN KEY (ID_USER) REFERENCES USERS (ID),
+    PRIMARY KEY(ID_USER, ID_ROL)								,
+    
+    FOREIGN KEY (ID_USER) REFERENCES USERS (ID) 				,
     FOREIGN KEY (ID_ROL) REFERENCES ROLES (ID)
 );
+

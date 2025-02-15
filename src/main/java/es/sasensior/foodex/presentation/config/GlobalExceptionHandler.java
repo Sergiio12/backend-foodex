@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	private static final String JSON_OBJECT_NOT_READABLE = "No se puede leer el objeto JSON.";
-	private static final String HTTP_REQUEST_METHOD_NOT_SUPPORTED = "No existe end-point para atender esta petición. ¿Estás usando el verbo correcto?";
+	private static final String HTTP_REQUEST_METHOD_NOT_SUPPORTED = "No existe end-point para atender esta petición.";
 	private static final String UNEXCEPTED_SERVER_ERROR = "Se ha producido un error inesperado en el servidor.";
 	
 
@@ -46,6 +46,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta);
 		
 		return ResponseEntity.badRequest().body(apiResponseBody);
+	}
+	
+	// **********************************************************************************
+	
+	@ExceptionHandler(PresentationException.class)
+	public ResponseEntity<Object> handlePresentationException(PresentationException ex) {
+		return new ResponseEntity<>(ex.getApiResponseBody(), ex.getHttpSatus());
 	}
 	
 	// **********************************************************************************

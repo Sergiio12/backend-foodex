@@ -58,8 +58,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 	 
 	 @Override
 	 public boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-		 String path = request.getServletPath();
-		 return path.startsWith("/auth/signup");
+	     String path = request.getServletPath();
+	     return path.equals("/auth/signin") || path.equals("/auth/signup");
 	 }
 	 
 	 // *************************************************************************************

@@ -11,13 +11,13 @@ import lombok.Data;
 @Entity
 @Table(name="ROLES")
 @Data
-public class RolePL {
+public class RolPL {
 	
 	@Id
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
-	private Role name;
+	private Rol name;
 
 }

@@ -31,7 +31,7 @@ import lombok.Data;
 public class UsuarioPL {
 	
 	@Id
-	@GeneratedValue(generator = "PERSONA_SEQ")
+	@GeneratedValue(generator = "USUARIO_SEQ")
 	private Long id;
 	
 	@NotBlank
@@ -71,6 +71,6 @@ public class UsuarioPL {
 		    joinColumns = @JoinColumn(name = "ID_USER"), 
 		    inverseJoinColumns = @JoinColumn(name = "ID_ROL")
 		)
-	private Set<RolePL> roles = new HashSet<>(); 
+	private Set<RolPL> roles = new HashSet<>(); 
 
 }
