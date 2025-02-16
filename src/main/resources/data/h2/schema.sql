@@ -34,7 +34,6 @@ CREATE TABLE USERS (
     ENABLED 						BOOLEAN 				   NOT NULL,
     FIRST_NAME 						VARCHAR(50) 				       ,
     LAST_NAME 						VARCHAR(50) 					   ,
-    LAST_PASSWORD_RESET_DATE 		DATETIME 						   ,
     
     PRIMARY KEY (ID)
 );

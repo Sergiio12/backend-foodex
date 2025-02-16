@@ -2,6 +2,7 @@ package es.sasensior.foodex.security.presentation.restcontroller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ public class UsuarioController {
 		this.usuarioPLService = usuarioPLService;
 	}
 	
+    @PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> asignarRol(@RequestParam String nombreUsuario, @RequestParam String nombreRol) {
 		try {
@@ -36,6 +38,7 @@ public class UsuarioController {
 		}
 	}
 	
+    @PreAuthorize("hasRole('ADMIN')")
 	@PutMapping
 	public ResponseEntity<?> eliminarRol(@RequestParam String nombreUsuario, @RequestParam String nombreRol) {
 		try {
