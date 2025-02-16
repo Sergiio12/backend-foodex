@@ -10,7 +10,7 @@ public interface UsuarioPLService {
 	
 	void register(UsuarioPL usuario);
 	
-	void setRol(String username, String rolName);
+	void addRol(String username, String rolName);
 	
 	void removeRol(String username, String rolName);
 

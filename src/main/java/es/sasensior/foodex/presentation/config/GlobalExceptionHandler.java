@@ -25,7 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, JSON_OBJECT_NOT_READABLE);
+		ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(JSON_OBJECT_NOT_READABLE).status(ResponseStatus.ERROR).build();
 		return ResponseEntity.badRequest().body(apiResponseBody);
 	}
 
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, HTTP_REQUEST_METHOD_NOT_SUPPORTED);
+		ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(HTTP_REQUEST_METHOD_NOT_SUPPORTED).status(ResponseStatus.ERROR).build();
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(apiResponseBody);
 	}
 
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String tipoEntrante = ex.getValue().getClass().getSimpleName();
 		
 		String respuesta = "El valor [" + ex.getValue() + "] es de tipo [" + tipoEntrante + "]. Se requiere un tipo [" + tipoRequerido + "]";
-		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, respuesta);
+		ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(respuesta).status(ResponseStatus.ERROR).build();
 		
 		return ResponseEntity.badRequest().body(apiResponseBody);
 	}
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleException(Exception ex){
-		ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, UNEXCEPTED_SERVER_ERROR);
+		ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(UNEXCEPTED_SERVER_ERROR).status(ResponseStatus.ERROR).build();
 		
 		return ResponseEntity.internalServerError().body(apiResponseBody);
 	}

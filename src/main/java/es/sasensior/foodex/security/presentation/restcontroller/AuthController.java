@@ -2,6 +2,7 @@ package es.sasensior.foodex.security.presentation.restcontroller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -28,10 +29,13 @@ import es.sasensior.foodex.presentation.config.PresentationException;
 import es.sasensior.foodex.presentation.config.ResponseStatus;
 import es.sasensior.foodex.security.JwtUtils;
 import es.sasensior.foodex.security.UserDetailsImpl;
+import es.sasensior.foodex.security.integration.model.Rol;
+import es.sasensior.foodex.security.integration.model.RolPL;
 import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import es.sasensior.foodex.security.payloads.JwtResponse;
 import es.sasensior.foodex.security.payloads.LoginRequest;
 import es.sasensior.foodex.security.payloads.SignupRequest;
+import es.sasensior.foodex.security.services.RolPLService;
 import es.sasensior.foodex.security.services.UsuarioPLService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,7 +55,10 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UsuarioPLService usuarioPLRepository;
+    private UsuarioPLService usuarioPLService;
+    
+    @Autowired
+    private RolPLService rolPLService;
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -66,8 +73,8 @@ public class AuthController {
         } catch(Exception e) {
             // Si la autenticación falla, registra el error y lanza una excepción con código 401 (Unauthorized)
             logger.error("Error de autenticación para el usuario {}", loginRequest.getUsername());
-            //return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponseBody(ResponseStatus.ERROR, "Credenciales inválidas."));
-            throw new PresentationException.Builder(HttpStatus.UNAUTHORIZED, "Credenciales inválidas.").build();
+            throw new PresentationException.Builder(HttpStatus.UNAUTHORIZED, "Credenciales inválidas.")
+            .build();
         }
 
         // Guarda la autenticación en el contexto de seguridad de Spring
@@ -85,7 +92,10 @@ public class AuthController {
 
         // Devuelve el token JWT y los datos del usuario autenticado en la respuesta
         JwtResponse jwtResponse = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
-        return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Autenticación exitosa.", jwtResponse, null));
+          return ResponseEntity.ok(new ApiResponseBody.Builder("Autenticación exitosa.")
+        		  .status(ResponseStatus.SUCCESS)
+        		  .data(jwtResponse)
+        		  .build());
     }
 
     @PostMapping("/signup")
@@ -99,21 +109,25 @@ public class AuthController {
             });
         	
             //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de validación en los campos de registro.", null, errors));
-            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de validación en los campos de registro.").errors(errors).build();
+            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de validación en los campos de registro.")
+            .errors(errors)
+            .build();
         }
 
-        if (usuarioPLRepository.existsUserByEmail(signupRequest.getEmail())) {
+        if (usuarioPLService.existsUserByEmail(signupRequest.getEmail())) {
         	errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
         }
 
-        if (usuarioPLRepository.existsUserByUsername(signupRequest.getUsername())) {
+        if (usuarioPLService.existsUserByUsername(signupRequest.getUsername())) {
         	errors.add(new ErrorDetail("username", "Ese nombre de usuario ya está registrado en nuestro sistema."));
         }
 
         //Si se encontraron errores con el email y el usuario, los devolvemos
         if (!errors.isEmpty()) {
               //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de registro.", null, errors));
-        	  throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de registro").errors(errors).build();
+        	  throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de registro")
+        	  .errors(errors)
+        	  .build();
         }
 
         //¿Todo correcto? Pues creamos al usuario
@@ -126,10 +140,21 @@ public class AuthController {
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
         usuario.setPassword(encodedPassword);
         usuario.setEnabled(true);
+        
+        Optional<RolPL> rolUsuario = rolPLService.getRol(Rol.USUARIO.toString());
+        
+        if(rolUsuario.isPresent()) {
+        	usuario.getRoles().add(rolUsuario.get());
+        } else {
+        	throw new PresentationException.Builder(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al registrar al usuario.")
+        	.build();
+        }
 
-        usuarioPLRepository.register(usuario);
+        usuarioPLService.register(usuario);
 
-        return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Registro exitoso."));
+        return ResponseEntity.ok(new ApiResponseBody.Builder("Registro exitoso.")
+        		.status(ResponseStatus.SUCCESS)
+        		.build());
     }
     
     @PostMapping("/logout")
@@ -140,7 +165,9 @@ public class AuthController {
     		new SecurityContextLogoutHandler().logout(request, response, auth);
     	}
     	
-    	return ResponseEntity.ok(new ApiResponseBody(ResponseStatus.SUCCESS, "Sesión cerrada con éxito."));
+    	return ResponseEntity.ok(new ApiResponseBody.Builder("Sesión cerrada con éxito.")
+    			.status(ResponseStatus.SUCCESS)
+    			.build());
     	
     }
     

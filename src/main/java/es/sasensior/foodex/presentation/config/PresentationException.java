@@ -17,10 +17,10 @@ public class PresentationException extends RuntimeException {
 	private PresentationException(Builder builder) {
 		super(builder.message);
 		this.httpSatus = builder.httpStatus;
-		this.apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, builder.message, builder.data, builder.errors);
+		this.apiResponseBody = new ApiResponseBody.Builder(builder.message).status(ResponseStatus.ERROR).data(builder.data).errors(builder.errors).build();
 	}
 	
-	//Creamos clase interna.
+	//Creamos clase interna para el patrón 'builder'.
 	public static class Builder {
 		private HttpStatus httpStatus;
 		private String message;

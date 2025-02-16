@@ -31,7 +31,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
     	
     	logger.error("Error de autenticación: {}", authException.getMessage());
     	
-    	ApiResponseBody apiResponseBody = new ApiResponseBody(ResponseStatus.ERROR, "Se requiere autenticación para acceder a este recurso.");
+    	ApiResponseBody apiResponseBody = new ApiResponseBody.Builder("Se requiere autenticación para acceder a este recurso.").status(ResponseStatus.ERROR).build();
     	
     	response.setContentType("application/json");
     	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

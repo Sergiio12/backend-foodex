@@ -1,29 +1,23 @@
 package es.sasensior.foodex.security.services.impl;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import es.sasensior.foodex.presentation.config.PresentationException;
-import es.sasensior.foodex.security.JwtUtils;
+import es.sasensior.foodex.security.integration.model.Rol;
 import es.sasensior.foodex.security.integration.model.RolPL;
 import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import es.sasensior.foodex.security.integration.repositories.RolPLRepository;
 import es.sasensior.foodex.security.integration.repositories.UsuarioPLRepository;
 import es.sasensior.foodex.security.services.UsuarioPLService;
-import lombok.Getter;
 
 @Service
-@Getter //Para quitar advertencias.
 public class UsuarioPLServiceImpl implements UsuarioPLService {
 
-	private UsuarioPLRepository usuarioPLRepository;
-	private RolPLRepository rolPLRepository;
-	private JwtUtils jwtUtils; 
+	private final UsuarioPLRepository usuarioPLRepository;
+	private final RolPLRepository rolPLRepository;
 	
-	public UsuarioPLServiceImpl(UsuarioPLRepository usuarioPLRepository, RolPLRepository rolPLRepository, JwtUtils jwtUtils) {
+	public UsuarioPLServiceImpl(UsuarioPLRepository usuarioPLRepository, RolPLRepository rolPLRepository) {
 		this.usuarioPLRepository = usuarioPLRepository;
 		this.rolPLRepository = rolPLRepository;
-		this.jwtUtils = jwtUtils;
 	}
 	
 	@Override
@@ -42,13 +36,13 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 	}
 
 	@Override
-	public void setRol(String username, String rolName) {
+	public void addRol(String username, String rolName) {
 		
 		UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
-				.orElseThrow(() -> new PresentationException.Builder(HttpStatus.BAD_REQUEST, "No se ha encontrado al usuario.").build());
+				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario."));
 		
 		RolPL rolPL = rolPLRepository.findByName(rolName)
-				.orElseThrow(() -> new PresentationException.Builder(HttpStatus.BAD_REQUEST, "No se ha encontrado el rol.").build());
+				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado el rol."));
 		
 		usuarioPL.getRoles().add(rolPL);
 		usuarioPLRepository.save(usuarioPL); //Con esto lo actualizamos.
@@ -59,10 +53,17 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 	public void removeRol(String username, String rolName) {
 		
 		UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
-				.orElseThrow(() -> new PresentationException.Builder(HttpStatus.BAD_REQUEST, "No se ha encontrado al usuario.").build());
+				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario."));
 		
 		RolPL rolPL = rolPLRepository.findByName(rolName)
-				.orElseThrow(() -> new PresentationException.Builder(HttpStatus.BAD_REQUEST, "No se ha encontrado el rol.").build());
+				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado el rol."));
+			
+		if(rolPL.getName().equals(Rol.USUARIO)) {
+			throw new IllegalStateException("No se puede borrar este rol porque está establecido como el rol por defecto.");
+		}
+		
+		usuarioPL.getRoles().remove(rolPL);
+		usuarioPLRepository.save(usuarioPL);
 		
 	}
 
