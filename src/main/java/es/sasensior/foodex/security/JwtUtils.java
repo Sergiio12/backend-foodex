@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -32,14 +33,14 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+        UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
 
-        List<String> roles = userDetailsImpl.getAuthorities().stream().map(x -> x.toString()).toList(); //Extrae todos los roles del usuario:
+        List<String> roles = usuarioPL.getAuthorities().stream().map(x -> x.toString()).toList(); //Extrae todos los roles del usuario:
         
-        String nombreCompleto = userDetailsImpl.getFirstName() + " " + userDetailsImpl.getLastName();
+        String nombreCompleto = usuarioPL.getFirstName() + " " + usuarioPL.getLastName();
 
         return Jwts.builder()
-                .setSubject(userDetailsImpl.getUsername()) //Define el nombre de usuario como el dueño del token.
+                .setSubject(usuarioPL.getUsername()) //Define el nombre de usuario como el dueño del token.
                 .claim("roles", roles) //Añade los roles al token.
                 .claim("nombre", nombreCompleto) //Añade el nombre completo al token.
                 .setIssuedAt(new Date(System.currentTimeMillis())) //Fecha de emisión.

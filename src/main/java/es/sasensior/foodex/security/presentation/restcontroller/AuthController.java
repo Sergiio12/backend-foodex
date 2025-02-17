@@ -28,7 +28,6 @@ import es.sasensior.foodex.presentation.config.ErrorDetail;
 import es.sasensior.foodex.presentation.config.PresentationException;
 import es.sasensior.foodex.presentation.config.ResponseStatus;
 import es.sasensior.foodex.security.JwtUtils;
-import es.sasensior.foodex.security.UserDetailsImpl;
 import es.sasensior.foodex.security.integration.model.Rol;
 import es.sasensior.foodex.security.integration.model.RolPL;
 import es.sasensior.foodex.security.integration.model.UsuarioPL;
@@ -83,15 +82,15 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         // Obtiene los detalles del usuario autenticado
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
 
         // Extrae los roles del usuario y los convierte en una lista de strings
-        List<String> roles = userDetails.getAuthorities().stream()
+        List<String> roles = usuarioPL.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
         // Devuelve el token JWT y los datos del usuario autenticado en la respuesta
-        JwtResponse jwtResponse = new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
+        JwtResponse jwtResponse = new JwtResponse(jwt, usuarioPL.getId(), usuarioPL.getUsername(), usuarioPL.getEmail(), roles);
           return ResponseEntity.ok(new ApiResponseBody.Builder("Autenticación exitosa.")
         		  .status(ResponseStatus.SUCCESS)
         		  .data(jwtResponse)

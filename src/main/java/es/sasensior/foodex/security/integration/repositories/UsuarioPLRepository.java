@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import es.sasensior.foodex.security.integration.model.Rol;
 import es.sasensior.foodex.security.integration.model.UsuarioPL;
 
 public interface UsuarioPLRepository extends JpaRepository<UsuarioPL, Long>{
@@ -24,5 +25,10 @@ public interface UsuarioPLRepository extends JpaRepository<UsuarioPL, Long>{
 		       "WHERE u.username = :username " +
 		       "AND r.name = 'USUARIO'")
 	boolean hasOnlyDefaultRole(@Param("username") String username);
+	
+	@Query("SELECT COUNT(u) > 0 FROM UsuarioPL u " +
+	           "JOIN u.roles r " +
+	           "WHERE r.name = :role AND u.username = :username")
+	boolean hasRole(@Param("username") String username, @Param("role") Rol role);
 	
 }

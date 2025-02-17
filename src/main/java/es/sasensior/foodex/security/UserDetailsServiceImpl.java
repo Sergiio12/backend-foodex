@@ -34,6 +34,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username " + username));
 
         // Convierte el usuario obtenido en una instancia de UserDetailsImpl para que Spring Security pueda manejarlo.
-        return UserDetailsImpl.build(usuarioPL);
+        return usuarioPL;
     }
 }
