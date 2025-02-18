@@ -167,7 +167,6 @@ public class AuthController {
     	return ResponseEntity.ok(new ApiResponseBody.Builder("Sesión cerrada con éxito.")
     			.status(ResponseStatus.SUCCESS)
     			.build());
-    	
     }
     
 }
