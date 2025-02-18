@@ -1,4 +1,4 @@
-package es.sasensior.foodex.presentation.config;
+package es.sasensior.foodex.presentation.utils;
 
 import java.util.List;
 

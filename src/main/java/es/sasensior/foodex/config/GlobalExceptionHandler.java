@@ -1,4 +1,4 @@
-package es.sasensior.foodex.presentation.config;
+package es.sasensior.foodex.config;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +9,10 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import es.sasensior.foodex.presentation.utils.ApiResponseBody;
+import es.sasensior.foodex.presentation.utils.PresentationException;
+import es.sasensior.foodex.presentation.utils.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

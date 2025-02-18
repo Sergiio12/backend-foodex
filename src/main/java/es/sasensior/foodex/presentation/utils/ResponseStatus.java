@@ -1,4 +1,4 @@
-package es.sasensior.foodex.presentation.config;
+package es.sasensior.foodex.presentation.utils;
 
 public enum ResponseStatus {
 	SUCCESS, ERROR

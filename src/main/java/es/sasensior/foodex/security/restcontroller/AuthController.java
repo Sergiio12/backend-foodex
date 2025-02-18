@@ -1,4 +1,4 @@
-package es.sasensior.foodex.security.presentation.restcontroller;
+package es.sasensior.foodex.security.restcontroller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.sasensior.foodex.presentation.config.ApiResponseBody;
-import es.sasensior.foodex.presentation.config.ErrorDetail;
-import es.sasensior.foodex.presentation.config.PresentationException;
-import es.sasensior.foodex.presentation.config.ResponseStatus;
+import es.sasensior.foodex.presentation.utils.ApiResponseBody;
+import es.sasensior.foodex.presentation.utils.ErrorDetail;
+import es.sasensior.foodex.presentation.utils.PresentationException;
+import es.sasensior.foodex.presentation.utils.ResponseStatus;
 import es.sasensior.foodex.security.JwtUtils;
 import es.sasensior.foodex.security.integration.model.Rol;
 import es.sasensior.foodex.security.integration.model.RolPL;

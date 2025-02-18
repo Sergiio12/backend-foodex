@@ -1,4 +1,4 @@
-package es.sasensior.foodex.security.presentation.restcontroller;
+package es.sasensior.foodex.security.restcontroller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import es.sasensior.foodex.presentation.config.ApiResponseBody;
-import es.sasensior.foodex.presentation.config.PresentationException;
-import es.sasensior.foodex.presentation.config.ResponseStatus;
+import es.sasensior.foodex.presentation.utils.ApiResponseBody;
+import es.sasensior.foodex.presentation.utils.PresentationException;
+import es.sasensior.foodex.presentation.utils.ResponseStatus;
 import es.sasensior.foodex.security.services.UsuarioPLService;
 
 @RestController

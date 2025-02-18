@@ -19,13 +19,6 @@ public interface UsuarioPLRepository extends JpaRepository<UsuarioPL, Long>{
 	@Query("SELECT COUNT(u) > 0 FROM UsuarioPL u WHERE u.username = :username")
 	boolean existsByUsername(@Param("username") String name);
 	
-	@Query("SELECT COUNT(ur) = 1 FROM UsuarioRolesPL ur " +
-		       "JOIN ur.usuario u " +
-		       "JOIN ur.rol r " +
-		       "WHERE u.username = :username " +
-		       "AND r.name = 'USUARIO'")
-	boolean hasOnlyDefaultRole(@Param("username") String username);
-	
 	@Query("SELECT COUNT(u) > 0 FROM UsuarioPL u " +
 	           "JOIN u.roles r " +
 	           "WHERE r.name = :role AND u.username = :username")

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.sasensior.foodex.presentation.config.ApiResponseBody;
-import es.sasensior.foodex.presentation.config.ResponseStatus;
+import es.sasensior.foodex.presentation.utils.ApiResponseBody;
+import es.sasensior.foodex.presentation.utils.ResponseStatus;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
