@@ -4,6 +4,10 @@ import lombok.Data;
 
 @Data
 public class Direccion {
-	//TODO
+	private String codPostal;
+	private String provincia;
+	private String calle;
+	private String bloque;
+	private String portal;
 	
 }

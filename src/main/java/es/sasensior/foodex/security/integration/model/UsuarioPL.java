@@ -35,13 +35,13 @@ import lombok.Data;
         @UniqueConstraint(columnNames = "EMAIL")
 })
 @Data
-@SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "USUARIO_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "GENERAL_SEQ", sequenceName = "GENERAL_SEQ", allocationSize = 1)
 public class UsuarioPL implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQ")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
     private Long id;
 
     @NotBlank
