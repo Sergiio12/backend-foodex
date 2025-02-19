@@ -1,6 +1,7 @@
 package es.sasensior.foodex.security.integration.model;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,11 +10,23 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
@@ -22,7 +35,7 @@ import lombok.Data;
         @UniqueConstraint(columnNames = "EMAIL")
 })
 @Data
-@SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "USUARIO_SEQ", allocationSize = 50)
+@SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "USUARIO_SEQ", allocationSize = 1)
 public class UsuarioPL implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -32,8 +45,6 @@ public class UsuarioPL implements UserDetails {
     private Long id;
 
     @NotBlank
-    @Column(length = 50, nullable = false, unique = true)
-    @Size(min = 4, max = 50)
     private String username;
 
     @NotBlank
@@ -41,26 +52,30 @@ public class UsuarioPL implements UserDetails {
     private String password;
 
     @NotBlank
-    @Size(max = 150)
     @Email
-    @Column(nullable = false, unique = true)
     private String email;
 
-    @Size(max = 50)
-    @Column(length = 50)
     private String telefono;
 
     @NotNull
-    @Column(nullable = false)
     private boolean enabled;
 
-    @Size(min = 4, max = 50)
-    @Column(name = "FIRST_NAME")
+    @NotBlank
     private String firstName;
 
-    @Size(min = 4, max = 50)
-    @Column(name = "LAST_NAME")
+    @NotBlank
     private String lastName;
+    
+    @NotBlank
+    private String name;
+    
+    @NotNull
+    @Temporal(TemporalType.DATE)
+    private Date fechaRegistro;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "ULTIMO_LOGIN")
+    private Date fechaUltimoLogin;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

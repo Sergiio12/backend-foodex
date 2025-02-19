@@ -8,6 +8,8 @@ public interface UsuarioPLService {
 	
 	boolean existsUserByEmail(String email);
 	
+	void guardarEstado(UsuarioPL usuarioPL);
+	
 	void register(UsuarioPL usuario);
 	
 	void addRol(String username, String rolName);

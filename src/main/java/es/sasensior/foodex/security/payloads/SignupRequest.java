@@ -23,9 +23,13 @@ public class SignupRequest implements Serializable {
 	@Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
 	private String password;
 	
+	@NotBlank(message="Es necesario espeficiar un nombre!")
+	private String name;
+	
+	@NotBlank(message="Es necesario espeficiar un nombre!")
 	private String firstName;
 	
-	
+	@NotBlank(message="Es necesario espeficiar un nombre!")
 	private String lastName;
 
 }

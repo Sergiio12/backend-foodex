@@ -8,7 +8,6 @@ import es.sasensior.foodex.security.integration.model.UsuarioPL;
 import es.sasensior.foodex.security.integration.repositories.RolPLRepository;
 import es.sasensior.foodex.security.integration.repositories.UsuarioPLRepository;
 import es.sasensior.foodex.security.services.UsuarioPLService;
-import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioPLServiceImpl implements UsuarioPLService {
@@ -37,7 +36,6 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 	}
 
 	@Override
-	@Transactional
 	public void addRol(String username, String rolName) {
 		
 		UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
@@ -56,7 +54,6 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 	}
 
 	@Override
-	@Transactional
 	public void removeRol(String username, String rolName) {
 		
 		UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
@@ -78,6 +75,12 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 		}
 		
 		usuarioPL.getRoles().remove(rolPL);
+		usuarioPLRepository.save(usuarioPL);
+		
+	}
+
+	@Override
+	public void guardarEstado(UsuarioPL usuarioPL) {
 		usuarioPLRepository.save(usuarioPL);
 		
 	}

@@ -1,5 +1,8 @@
 package es.sasensior.foodex.business.model;
 
-public class Pedido {
+import lombok.Data;
 
+@Data
+public class Pedido {
+	//TODO
 }

@@ -1,6 +1,7 @@
 package es.sasensior.foodex.security.restcontroller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -89,12 +90,16 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        usuarioPL.setFechaUltimoLogin(new Date());
+        usuarioPLService.guardarEstado(usuarioPL);
+        
         // Devuelve el token JWT y los datos del usuario autenticado en la respuesta
         JwtResponse jwtResponse = new JwtResponse(jwt, usuarioPL.getId(), usuarioPL.getUsername(), usuarioPL.getEmail(), roles);
           return ResponseEntity.ok(new ApiResponseBody.Builder("Autenticación exitosa.")
         		  .status(ResponseStatus.SUCCESS)
         		  .data(jwtResponse)
         		  .build());
+          
     }
 
     @PostMapping("/signup")
@@ -133,12 +138,16 @@ public class AuthController {
         UsuarioPL usuario = new UsuarioPL();
         usuario.setUsername(signupRequest.getUsername());
         usuario.setEmail(signupRequest.getEmail());
+        usuario.setName(signupRequest.getName());
         usuario.setFirstName(signupRequest.getFirstName());
         usuario.setLastName(signupRequest.getLastName());
         
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
         usuario.setPassword(encodedPassword);
+        
         usuario.setEnabled(true);
+        
+        usuario.setFechaRegistro(new Date());
         
         Optional<RolPL> rolUsuario = rolPLService.getRol(Rol.USUARIO.toString());
         
