@@ -2,7 +2,7 @@ package es.sasensior.foodex.security.services;
 
 import java.util.Optional;
 
-import es.sasensior.foodex.security.integration.model.RolPL;
+import es.sasensior.foodex.security.integration.dao.RolPL;
 
 public interface RolPLService {
 

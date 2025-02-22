@@ -1,6 +1,6 @@
 package es.sasensior.foodex.security.services;
 
-import es.sasensior.foodex.security.integration.model.UsuarioPL;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 
 public interface UsuarioPLService {
 	

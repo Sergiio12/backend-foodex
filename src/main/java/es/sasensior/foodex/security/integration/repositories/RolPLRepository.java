@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import es.sasensior.foodex.security.integration.model.RolPL;
+import es.sasensior.foodex.security.integration.dao.RolPL;
 
 public interface RolPLRepository extends JpaRepository<RolPL, Long>{
 

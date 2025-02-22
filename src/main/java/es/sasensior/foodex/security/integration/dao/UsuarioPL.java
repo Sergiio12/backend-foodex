@@ -1,4 +1,4 @@
-package es.sasensior.foodex.security.integration.model;
+package es.sasensior.foodex.security.integration.dao;
 
 import java.util.Collection;
 import java.util.Date;

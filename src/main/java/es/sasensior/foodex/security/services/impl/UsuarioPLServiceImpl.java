@@ -2,9 +2,9 @@ package es.sasensior.foodex.security.services.impl;
 
 import org.springframework.stereotype.Service;
 
-import es.sasensior.foodex.security.integration.model.Rol;
-import es.sasensior.foodex.security.integration.model.RolPL;
-import es.sasensior.foodex.security.integration.model.UsuarioPL;
+import es.sasensior.foodex.security.integration.dao.Rol;
+import es.sasensior.foodex.security.integration.dao.RolPL;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import es.sasensior.foodex.security.integration.repositories.RolPLRepository;
 import es.sasensior.foodex.security.integration.repositories.UsuarioPLRepository;
 import es.sasensior.foodex.security.services.UsuarioPLService;

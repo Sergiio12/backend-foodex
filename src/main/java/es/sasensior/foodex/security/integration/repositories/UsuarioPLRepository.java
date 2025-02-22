@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import es.sasensior.foodex.security.integration.model.Rol;
-import es.sasensior.foodex.security.integration.model.UsuarioPL;
+import es.sasensior.foodex.security.integration.dao.Rol;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 
 public interface UsuarioPLRepository extends JpaRepository<UsuarioPL, Long>{
 

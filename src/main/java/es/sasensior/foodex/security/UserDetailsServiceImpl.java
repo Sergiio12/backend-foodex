@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import es.sasensior.foodex.security.integration.model.UsuarioPL;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import es.sasensior.foodex.security.integration.repositories.UsuarioPLRepository;
 
 /**

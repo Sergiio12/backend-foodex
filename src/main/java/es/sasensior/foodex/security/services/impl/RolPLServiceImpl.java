@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import es.sasensior.foodex.security.integration.model.RolPL;
+import es.sasensior.foodex.security.integration.dao.RolPL;
 import es.sasensior.foodex.security.integration.repositories.RolPLRepository;
 import es.sasensior.foodex.security.services.RolPLService;
 

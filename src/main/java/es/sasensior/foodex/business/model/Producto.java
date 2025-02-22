@@ -9,6 +9,7 @@ public class Producto {
 	private Long id;
 	private Categoria categoria;
 	private String nombre;
+	private String descripcion;
 	private Double precio;
 	private Integer stock;
 	private Boolean descatalogado;

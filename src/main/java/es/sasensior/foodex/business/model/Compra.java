@@ -12,5 +12,5 @@ public class Compra {
 	private EstadoCompra estado;
 	private Date fechaHora;
 	private String comentario;
-	private List<ProductosCompra> productos;
+	private List<ProductoCompra> productos;
 }

@@ -2,7 +2,7 @@ package es.sasensior.foodex.business.model;
 
 import java.util.List;
 
-import es.sasensior.foodex.security.integration.model.UsuarioPL;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import lombok.Data;
 
 @Data

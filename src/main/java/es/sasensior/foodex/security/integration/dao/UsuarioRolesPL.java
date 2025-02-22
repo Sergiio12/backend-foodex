@@ -1,4 +1,4 @@
-package es.sasensior.foodex.security.integration.model;
+package es.sasensior.foodex.security.integration.dao;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
