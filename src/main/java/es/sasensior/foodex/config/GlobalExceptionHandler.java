@@ -9,6 +9,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import es.sasensior.foodex.presentation.utils.ApiResponseBody;
 import es.sasensior.foodex.presentation.utils.PresentationException;
@@ -21,6 +22,7 @@ public class GlobalExceptionHandler {
     private static final String HTTP_REQUEST_METHOD_NOT_SUPPORTED = "No existe end-point para atender esta petición.";
     private static final String UNEXCEPTED_SERVER_ERROR = "Se ha producido un error inesperado en el servidor.";
     private static final String ACCESS_DENIED = "No tienes permisos para realizar esta acción.";
+    private static final String NO_RESOURCE_FOUND_EXCEPTION = "No se ha encontrado el recurso que buscas.";
 
     // **********************************************************************************
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -67,6 +69,13 @@ public class GlobalExceptionHandler {
         
         String respuesta = "El valor [" + ex.getValue() + "] es de tipo [" + tipoEntrante + "]. Se requiere un tipo [" + tipoRequerido + "]";
         ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(respuesta).status(ResponseStatus.ERROR).build();
+        
+        return ResponseEntity.badRequest().body(apiResponseBody);
+    }
+    
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex) {
+        ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(NO_RESOURCE_FOUND_EXCEPTION).status(ResponseStatus.ERROR).build();
         
         return ResponseEntity.badRequest().body(apiResponseBody);
     }

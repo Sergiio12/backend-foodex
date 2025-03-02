@@ -1,12 +1,10 @@
 package es.sasensior.foodex.integration.dao;
 
-import es.sasensior.foodex.security.integration.dao.UsuarioPL;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -22,10 +20,6 @@ public class ClientePL {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
 	private Long id;
 	
-	@OneToOne
-	@JoinColumn(name = "ID_USUARIO", nullable = false, unique = true)
-	private UsuarioPL usuario;
-	
 	@NotBlank
 	private String nombre;
 	
@@ -33,20 +27,10 @@ public class ClientePL {
 	
 	private String apellido2;
 	
-	@NotBlank
-	private String telefono;
-	
-	private String email;
-	
-	private String codPostal;
-	
-	@NotBlank
-	private String provincia;
-	
-	private String calle;
-	
-	private String bloque;
-	
-	private String portal;
+	@Embedded
+	private DireccionPL direccion;
 
+	@Embedded
+	private DatosContactoPL datosContacto;
+	
 }

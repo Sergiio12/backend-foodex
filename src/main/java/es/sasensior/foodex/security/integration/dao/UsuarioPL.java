@@ -10,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,6 +51,7 @@ public class UsuarioPL implements UserDetails {
 
     @NotBlank
     @Column(length = 100, nullable = false)
+    @JsonIgnore
     private String password;
 
     @NotBlank
@@ -89,10 +92,29 @@ public class UsuarioPL implements UserDetails {
      * Devuelve los roles del usuario como `GrantedAuthority` para Spring Security.
      */
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol.getName()))
                 .collect(Collectors.toSet());
+    }
+    
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+    	return UserDetails.super.isAccountNonExpired();
+    }
+    
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+    	return UserDetails.super.isAccountNonLocked();
+    }
+    
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+    	return UserDetails.super.isCredentialsNonExpired();
     }
 
 }
