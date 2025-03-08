@@ -1,5 +1,8 @@
 package es.sasensior.foodex.integration.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -17,11 +20,15 @@ public class ItemCarritoPL {
 	@Id
 	@ManyToOne
     @JoinColumn(name = "ID_CARRITO", nullable = false)
+	@JsonIgnore
 	private CarritoCompraPL carrito;
 	
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "ID_PRODUCTO", nullable = false)
 	private ProductoPL producto;
+	
+	@Column(nullable = false)
+	private Integer cantidad;
 
 }

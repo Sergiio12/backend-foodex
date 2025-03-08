@@ -44,3 +44,48 @@ VALUES
 (9, 'Miguel', 'Romero', 'Serrano', '688789654', 'miguel.romero@example.com', '20006', 'San Sebastián', 'Calle Mayor', 'I', '9'),
 (10, 'Carmen', 'Navarro', 'Iglesias', '699321654', 'carmen.navarro@example.com', '35007', 'Las Palmas', 'Avenida Mesa y López', 'J', '10');
 
+/*
+* CATEGORÍAS
+*/
+
+INSERT INTO CATEGORIAS (ID, NOMBRE, DESCRIPCION, IMG_URL) VALUES
+(1, 'Frutas', 'Frutas frescas y naturales', 'img/frutas.jpg'),
+(2, 'Lácteos', 'Productos derivados de la leche', 'img/lacteos.jpg'),
+(3, 'Carnes', 'Carnes frescas de gran calidad', 'img/carnes.jpg'),
+(4, 'Bebidas', 'Refrescos y bebidas variadas', 'img/bebidas.jpg');
+
+/*
+* PRODUCTOS
+*/
+
+INSERT INTO PRODUCTOS (ID, ID_CATEGORIA, NOMBRE, DESCRIPCION, PRECIO, STOCK, DESCATALOGADO, IMG_URL, FECHA_ALTA) VALUES
+(1, 1, 'Manzana', 'Manzana roja deliciosa', 1.20, 100, false, 'img/manzana.jpg', CURRENT_TIMESTAMP),
+(2, 1, 'Plátano', 'Plátano maduro y dulce', 0.80, 120, false, 'img/platano.jpg', CURRENT_TIMESTAMP),
+(3, 2, 'Leche', 'Leche entera pasteurizada', 1.50, 80, false, 'img/leche.jpg', CURRENT_TIMESTAMP),
+(4, 2, 'Queso', 'Queso curado de oveja', 3.75, 50, false, 'img/queso.jpg', CURRENT_TIMESTAMP),
+(5, 3, 'Pollo', 'Pechuga de pollo fresca', 6.40, 60, false, 'img/pollo.jpg', CURRENT_TIMESTAMP),
+(6, 3, 'Ternera', 'Filete de ternera', 12.99, 40, false, 'img/ternera.jpg', CURRENT_TIMESTAMP),
+(7, 4, 'Coca Cola', 'Refresco de cola 2L', 2.20, 150, false, 'img/coca_cola.jpg', CURRENT_TIMESTAMP),
+(8, 4, 'Agua Mineral', 'Botella de agua 1.5L', 1.00, 200, false, 'img/agua.jpg', CURRENT_TIMESTAMP);
+
+/* 
+ * CARRITOS DE COMPRA
+ */
+
+INSERT INTO CARRITO_COMPRA (ID, ID_USUARIO) VALUES
+--(1, 1),
+(2, 2),
+(3, 3);
+
+/* 
+ * ITEMS DE CARRITO
+ */
+
+INSERT INTO ITEMS_CARRITO (ID_CARRITO, ID_PRODUCTO, CANTIDAD) VALUES
+(1, 1, 2), -- Usuario 1 tiene Manzana en su carrito
+(1, 3, 3), -- Usuario 1 tiene Leche en su carrito
+(2, 5, 4), -- Usuario 2 tiene Pollo en su carrito
+(2, 7, 5), -- Usuario 2 tiene Coca Cola en su carrito
+(3, 2, 6), -- Usuario 3 tiene Plátano en su carrito
+(3, 6, 4); -- Usuario 3 tiene Ternera en su carrito
+

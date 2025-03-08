@@ -2,6 +2,8 @@ package es.sasensior.foodex.integration.dao;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -23,10 +25,12 @@ public class CarritoCompraPL {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
+	@JsonIgnore
 	private Long id;
 	
 	@OneToOne
-	@JoinColumn(name = "ID_USUARIO", nullable = false, unique = true)
+	@JoinColumn(name = "ID_USUARIO", nullable = false)
+	@JsonIgnore
 	private UsuarioPL usuario;
 	
 	@OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -6,4 +6,5 @@ import lombok.Data;
 public class ItemCarrito {
 	private CarritoCompra carrito;
 	private Producto producto;
+	private Integer cantidad;
 }
