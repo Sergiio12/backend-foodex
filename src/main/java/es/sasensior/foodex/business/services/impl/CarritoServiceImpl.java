@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import es.sasensior.foodex.business.model.CarritoCompra;
 import es.sasensior.foodex.business.services.CarritoService;
 import es.sasensior.foodex.integration.dao.CarritoCompraPL;
 import es.sasensior.foodex.integration.dao.ItemCarritoPL;
@@ -36,12 +37,13 @@ public class CarritoServiceImpl implements CarritoService {
 	}
 
 	@Override
-	public Optional<CarritoCompraPL> getCarrito() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
-		
-		return this.carritoRepository.findByUsuarioId(usuarioPL.getId());
-	}
+    public Optional<CarritoCompra> getCarrito() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
+
+        return this.carritoRepository.findByUsuarioId(usuarioPL.getId())
+            .map(carrito -> mapper.map(carrito, CarritoCompra.class)); // Mapear CarritoCompraPL a CarritoCompra
+    }
 	
 	@Override
 	@Transactional
@@ -103,7 +105,7 @@ public class CarritoServiceImpl implements CarritoService {
 
 	@Override
 	@Transactional
-	public void resetCarritoCompraOfUsuario() {
+	public void removeAllProductosFromCarrito() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		UsuarioPL usuario = (UsuarioPL) authentication.getPrincipal();
 		

@@ -1,7 +1,5 @@
 package es.sasensior.foodex.integration.dao;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,7 +18,7 @@ public class ItemCarritoPL {
 	@Id
 	@ManyToOne
     @JoinColumn(name = "ID_CARRITO", nullable = false)
-	@JsonIgnore
+	//@JsonBackReference
 	private CarritoCompraPL carrito;
 	
 	@Id

@@ -53,7 +53,7 @@ public class UsuarioPL implements UserDetails {
     @Column(length = 100, nullable = false)
     @JsonIgnore
     private String password;
-
+    
     @NotBlank
     @Email
     private String email;
