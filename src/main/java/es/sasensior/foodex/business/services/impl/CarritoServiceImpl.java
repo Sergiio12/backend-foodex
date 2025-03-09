@@ -35,7 +35,7 @@ public class CarritoServiceImpl implements CarritoService {
 		this.itemCarritoRepository = itemCarritoRepository;
 		this.mapper = mapper;
 	}
-
+	
 	@Override
     public Optional<CarritoCompra> getCarrito() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -64,6 +64,9 @@ public class CarritoServiceImpl implements CarritoService {
 			// Si el producto ya está en el carrito, lanza error:
 			throw new IllegalStateException("El producto ya se encuentra en el carrito.");
 		} else {
+			if(producto.getStock() < cantidad) {
+				throw new IllegalStateException("No hay suficiente cantidad de stock disponible para comprar ese producto.");
+			}	
 			// Si no está en el carrito, crea una nueva entrada
 			ItemCarritoPL itemCarrito = new ItemCarritoPL();
 			itemCarrito.setCarrito(carrito);

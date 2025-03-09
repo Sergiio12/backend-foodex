@@ -1,5 +1,11 @@
 package es.sasensior.foodex.integration.repositories;
 
-public interface CompraRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import es.sasensior.foodex.integration.dao.CompraPL;
+
+public interface CompraRepository extends JpaRepository<CompraPL, Long>{
+
+	
+	
 }

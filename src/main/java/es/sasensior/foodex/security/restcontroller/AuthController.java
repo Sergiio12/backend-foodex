@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import es.sasensior.foodex.integration.dao.CarritoCompraPL;
+import es.sasensior.foodex.integration.repositories.CarritoRepository;
 import es.sasensior.foodex.presentation.utils.ApiResponseBody;
 import es.sasensior.foodex.presentation.utils.ErrorDetail;
 import es.sasensior.foodex.presentation.utils.PresentationException;
@@ -56,6 +58,9 @@ public class AuthController {
 
     @Autowired
     private UsuarioPLService usuarioPLService;
+    
+    @Autowired
+    private CarritoRepository carritoRepository; 
     
     @Autowired
     private RolPLService rolPLService;
@@ -157,8 +162,13 @@ public class AuthController {
         	throw new PresentationException.Builder(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al registrar al usuario.")
         	.build();
         }
+        
+        CarritoCompraPL carritoCompra = new CarritoCompraPL();
+        carritoCompra.setUsuario(usuario);
+        carritoCompra.setItemsCarrito(new ArrayList<>());
+        this.carritoRepository.save(carritoCompra);
 
-        usuarioPLService.register(usuario);
+        this.usuarioPLService.register(usuario);
 
         return ResponseEntity.ok(new ApiResponseBody.Builder("Registro exitoso.")
         		.status(ResponseStatus.SUCCESS)

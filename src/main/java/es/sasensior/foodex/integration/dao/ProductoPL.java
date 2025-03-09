@@ -2,6 +2,7 @@ package es.sasensior.foodex.integration.dao;
 
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class ProductoPL {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST) //Esto es por si creamos una categoría que no existe.
 	@JoinColumn(name = "ID_CATEGORIA", nullable = false)
 	private CategoriaPL categoria;
 	

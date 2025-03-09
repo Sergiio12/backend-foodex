@@ -18,7 +18,7 @@ public class ItemCarritoPL {
 	@Id
 	@ManyToOne
     @JoinColumn(name = "ID_CARRITO", nullable = false)
-	//@JsonBackReference
+	// 
 	private CarritoCompraPL carrito;
 	
 	@Id

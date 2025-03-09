@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import es.sasensior.foodex.business.model.EstadoCompra;
+import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,8 +34,8 @@ public class CompraPL {
 	private Long id;
 	
 	@ManyToOne //Muchas compras por un cliente.
-	@JoinColumn(name = "ID_CLIENTE", nullable = false, unique = false)
-	private ClientePL cliente;
+	@JoinColumn(name = "ID_USUARIO", nullable = false, unique = false)
+	private UsuarioPL usuario;
 	
 	@Enumerated(EnumType.STRING)
 	private EstadoCompra estado;
@@ -46,6 +48,14 @@ public class CompraPL {
 	
 	@OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductoCompraPL> productos;
+	
+	private Double monto;
+	
+	@Embedded
+	private DireccionPL direccionPL;
+
+	@Embedded
+	private DatosContactoPL datosContactoPL;
 	
 
 }
