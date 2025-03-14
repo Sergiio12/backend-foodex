@@ -1,5 +1,6 @@
 package es.sasensior.foodex.business.services.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,102 +16,130 @@ import es.sasensior.foodex.integration.repositories.CategoriaRepository;
 import es.sasensior.foodex.integration.repositories.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Getter
+@RequiredArgsConstructor
 @Service
 public class ProductoServiceImpl implements ProductoService {
     
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
-    private DozerBeanMapper mapper;
-    
-    public ProductoServiceImpl(ProductoRepository productoRepository, DozerBeanMapper mapper, CategoriaRepository categoriaRepository) {
-        this.productoRepository = productoRepository;
-        this.mapper = mapper;
-        this.categoriaRepository = categoriaRepository;
-    }
+    private final DozerBeanMapper mapper;
 
     @Override
     public List<Producto> getAll() {
-        return convertProductosPLToProductos(productoRepository.findAll());
+        List<ProductoPL> productosPL = productoRepository.findAll();
+        return convertProductosPLToProductos(productosPL);
     }
 
     @Override
     public Optional<Producto> getProducto(Long idProducto) {
-        Optional<ProductoPL> productoPL = this.productoRepository.findById(idProducto);
-        
-        return Optional.of(productoPL.map(producto -> mapper.map(producto, Producto.class))
-                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado ningún producto con ese id.")));
-        
+        ProductoPL productoPL = productoRepository.findById(idProducto)
+                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado ningún producto con ese id."));
+        return Optional.of(mapper.map(productoPL, Producto.class));
     }
 
     @Override
     @Transactional
     public void createProducto(Producto producto) {
-        if (producto.getId() != null) {
-            throw new IllegalStateException("El id del objeto a crear debe ser nulo.");
-        }
         
-        if (producto.getCategoria() != null && producto.getCategoria().getId() != null) {
-            CategoriaPL categoriaExistente = categoriaRepository.findById(producto.getCategoria().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada."));
-            
-            producto.setCategoria(mapper.map(categoriaExistente, Categoria.class));
+    	if (producto.getId() != null) {
+            throw new IllegalStateException("El id del producto a crear debe ser nulo.");
         }
 
-        ProductoPL productoPL = mapper.map(producto, ProductoPL.class);
-        productoRepository.save(productoPL);
-    }
-
-    @Override
-    @Transactional
-    public void updateProducto(Producto producto) {
-        if (producto.getId() == null) {
-            throw new IllegalArgumentException("Debe especificarse el id del producto en la solicitud para actualizarlo.");
-        }
-        
-        ProductoPL productoExistente = productoRepository.findById(producto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró ningún producto con ese id."));
-
-        // Validaciones de campos obligatorios
         if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
             throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni estar vacío.");
         }
 
         if (producto.getPrecio() == null) {
-            throw new IllegalArgumentException("El precio del producto no puede ser nulo.");
-        }
-        
-        if (producto.getStock() == null) {
-            throw new IllegalArgumentException("El stock del producto no puede ser nulo.");
-        }
-        
-        if (producto.getDescatalogado() == null) {
-            throw new IllegalArgumentException("El estado de descatalogado no puede ser nulo.");
+            throw new IllegalStateException("El precio del producto no puede ser nulo.");
         }
 
-        if(producto.getCategoria() == null) {
-        	producto.setCategoria(mapper.map(productoExistente.getCategoria(), Categoria.class));
-        } else {
-        	throw new IllegalStateException("La categoría no se puede modificar.");
+        if (producto.getStock() == null) {
+            throw new IllegalStateException("El stock del producto no puede ser nulo.");
+        }
+
+        if (producto.getDescatalogado() == null) {
+            throw new IllegalStateException("El estado de descatalogado no puede ser nulo.");
+        }
+
+        if (producto.getCategoria() == null) {
+            throw new IllegalStateException("La categoría no puede ser nula.");
+        }
+
+        if (producto.getCategoria().getId() == null) {
+            throw new IllegalStateException("Debes especificar el id de una categoría existente.");
         }
         
-        producto.setFechaAlta(productoExistente.getFechaAlta()); //Mantenemos fecha de alta original.
+        if(producto.getFechaAlta() != null) {
+        	throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta. Déjalo nulo.");
+        }
+
+        // No se debe modificar la categoría en la creación
+        if (producto.getCategoria().getNombre() != null || producto.getCategoria().getDescripcion() != null || producto.getCategoria().getImgUrl() != null) {
+            throw new IllegalStateException("No especifiques el nombre, la descripción o la imagen de la categoría. Solo indica el id.");
+        }
         
+        CategoriaPL categoriaPL = this.categoriaRepository.findById(producto.getCategoria().getId())
+        		.orElseThrow(() -> new EntityNotFoundException("No se ha encontrado la categoría que buscas."));
+        
+        ProductoPL productoPL = mapper.map(producto, ProductoPL.class);
+        productoPL.setCategoria(categoriaPL);
+        productoPL.setFechaAlta(new Date());
+        System.out.println(productoPL.toString());
+        
+        this.productoRepository.save(productoPL);
+    	
+    }
+
+    @Override
+    @Transactional
+    public void updateProducto(Producto producto) {
+    	
+        if (producto.getId() == null) {
+            throw new IllegalStateException("Debe especificarse el id del producto en la solicitud para actualizarlo.");
+        }
+
+        ProductoPL productoExistente = productoRepository.findById(producto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró ningún producto con ese id."));
+
+        if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni estar vacío.");
+        }
+
+        if (producto.getPrecio() == null) {
+            throw new IllegalStateException("El precio del producto no puede ser nulo.");
+        }
+
+        if (producto.getStock() == null) {
+            throw new IllegalStateException("El stock del producto no puede ser nulo.");
+        }
+
+        if (producto.getDescatalogado() == null) {
+            throw new IllegalStateException("El estado de descatalogado no puede ser nulo.");
+        }
+
+        if (producto.getCategoria() != null) {
+            throw new IllegalStateException("La categoría no se puede modificar.");
+        }
+
+        // La categoría no se puede modificar, solo mantener la existente
+        producto.setCategoria(mapper.map(productoExistente.getCategoria(), Categoria.class));
+        producto.setFechaAlta(productoExistente.getFechaAlta()); // Mantener la fecha original
+
+        // Mapear el producto actualizado
         mapper.map(producto, productoExistente);
 
-        // Guardar cambios
+        // Guardar los cambios
         productoRepository.save(productoExistente);
     }
-    
 
     // ********************************************
     //
-    // Private Methods
+    // Métodos Privados
     //
     // ********************************************
-    
+
     private List<Producto> convertProductosPLToProductos(List<ProductoPL> productoPLList) {
         return productoPLList.stream()
                 .map(x -> mapper.map(x, Producto.class))

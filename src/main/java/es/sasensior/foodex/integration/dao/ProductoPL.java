@@ -18,11 +18,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "PRODUCTOS")
-@SequenceGenerator(name = "GENERAL_SEQ", sequenceName = "GENERAL_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "PRODUCTOS_SEQ", sequenceName = "PRODUCTOS_SEQ", allocationSize = 1)
 public class ProductoPL {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCTOS_SEQ")
 	private Long id;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST) //Esto es por si creamos una categoría que no existe.

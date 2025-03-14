@@ -3,17 +3,18 @@ package es.sasensior.foodex.business.services;
 import java.util.List;
 import java.util.Optional;
 
-import es.sasensior.foodex.business.model.Compra;
-import es.sasensior.foodex.business.model.ItemCarrito;
+import es.sasensior.foodex.business.model.DatosContacto;
+import es.sasensior.foodex.business.model.Direccion;
+import es.sasensior.foodex.business.model.dto.CompraDTO;
 
 public interface CompraService {
 	
-	List<Compra> getAllCompras();
+	List<CompraDTO> getAllComprasDTO();
 	
-	Optional<Compra> getCompra();
+	Optional<CompraDTO> getCompraDTO(Long id);
 	
-	void removeCompra();
+	void removeCompra(Long id);
 	
-	void comprar(List<ItemCarrito> itemsCarrito);
+	CompraDTO realizarCompra(String comentario, Direccion direccion, DatosContacto datosContacto);
 
 }

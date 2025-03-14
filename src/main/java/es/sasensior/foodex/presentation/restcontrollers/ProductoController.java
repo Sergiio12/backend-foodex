@@ -73,7 +73,7 @@ public class ProductoController {
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         try {
             productoService.createProducto(producto);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | IllegalArgumentException e) {
             throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage()).build();
         } catch(EntityNotFoundException e) {
         	throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage()).build();

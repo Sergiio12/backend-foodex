@@ -18,11 +18,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "CARRITO_COMPRA")
-@SequenceGenerator(name = "GENERAL_SEQ", sequenceName = "GENERAL_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "CARRITO_COMPRA_SEQ", sequenceName = "CARRITO_COMPRA_SEQ", allocationSize = 1)
 public class CarritoCompraPL {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CARRITO_COMPRA_SEQ")
 	private Long id;
 	
 	@OneToOne

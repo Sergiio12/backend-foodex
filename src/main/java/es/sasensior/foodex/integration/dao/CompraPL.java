@@ -26,11 +26,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "COMPRAS")
-@SequenceGenerator(name = "GENERAL_SEQ", sequenceName = "GENERAL_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "COMPRAS_SEQ", sequenceName = "COMPRAS_SEQ", allocationSize = 1)
 public class CompraPL {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPRAS_SEQ")
 	private Long id;
 	
 	@ManyToOne //Muchas compras por un cliente.

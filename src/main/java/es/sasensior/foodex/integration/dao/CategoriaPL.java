@@ -12,11 +12,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "CATEGORIAS")
-@SequenceGenerator(name = "GENERAL_SEQ", sequenceName = "GENERAL_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "CATEGORIAS_SEQ", sequenceName = "CATEGORIAS_SEQ", allocationSize = 1)
 public class CategoriaPL {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GENERAL_SEQ")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CATEGORIAS_SEQ")
 	private Long id;
 	
 	@Column(unique = true)

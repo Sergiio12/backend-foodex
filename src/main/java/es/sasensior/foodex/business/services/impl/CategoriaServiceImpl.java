@@ -28,7 +28,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public List<Categoria> getAll() {
-		return this.convertClientesPLToClientes(this.categoriaRepository.findAll());
+		return this.convertCategoriasPLToCategorias(this.categoriaRepository.findAll());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class CategoriaServiceImpl implements CategoriaService {
 	//
 	// ********************************************
 		
-		private List<Categoria> convertClientesPLToClientes(List<CategoriaPL> categoriaPL) {
+		private List<Categoria> convertCategoriasPLToCategorias(List<CategoriaPL> categoriaPL) {
 			return categoriaPL.stream()
 					.map(x -> mapper.map(x, Categoria.class))
 					.toList();

@@ -59,10 +59,6 @@ public class UsuarioPLServiceImpl implements UsuarioPLService {
 		UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado al usuario."));
 		
-		/*if(usuarioPLRepository.hasOnlyDefaultRole(usuarioPL.getUsername()) ) { //TODO - REVISAR, ESTA QUERY ESTÁ MAL.
-			throw new IllegalStateException("No puedes eliminar ningún rol de este usuario porque solo tiene el rol por defecto.");
-		}*/
-		
 		RolPL rolPL = rolPLRepository.findByName(rolName)
 				.orElseThrow(() -> new IllegalArgumentException("No se ha encontrado el rol."));
 		
