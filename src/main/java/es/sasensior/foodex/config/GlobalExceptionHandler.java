@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-
-import es.sasensior.foodex.business.services.impl.CarritoServiceImpl;
 import es.sasensior.foodex.presentation.utils.ApiResponseBody;
 import es.sasensior.foodex.presentation.utils.PresentationException;
 import es.sasensior.foodex.presentation.utils.ResponseStatus;
@@ -21,7 +19,7 @@ import es.sasensior.foodex.presentation.utils.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CarritoServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     
     private static final String JSON_OBJECT_NOT_READABLE = "No se puede leer el objeto JSON.";
     private static final String HTTP_REQUEST_METHOD_NOT_SUPPORTED = "No existe end-point para atender esta petición.";

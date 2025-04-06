@@ -45,7 +45,7 @@ import jakarta.validation.Valid;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
@@ -109,37 +109,32 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
-    	List<ErrorDetail> errors = new ArrayList<>();
+        List<ErrorDetail> errors = new ArrayList<>();
 
-        //Lo primero, validamos que los campos estén bien.
+        // Validar que los campos estén bien
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(fieldError -> {
-            	errors.add(new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()));
+                errors.add(new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()));
             });
-        	
-            //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de validación en los campos de registro.", null, errors));
-            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de validación en los campos de registro.")
-            .errors(errors)
-            .build();
+            
         }
 
+        // Verificar si el email y el nombre de usuario ya están registrados
         if (usuarioPLService.existsUserByEmail(signupRequest.getEmail())) {
-        	errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
+            errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
         }
 
         if (usuarioPLService.existsUserByUsername(signupRequest.getUsername())) {
-        	errors.add(new ErrorDetail("username", "Ese nombre de usuario ya está registrado en nuestro sistema."));
+            errors.add(new ErrorDetail("username", "Ese nombre de usuario ya está registrado en nuestro sistema."));
         }
 
-        //Si se encontraron errores con el email y el usuario, los devolvemos
         if (!errors.isEmpty()) {
-              //return ResponseEntity.badRequest().body(new ApiResponseBody(ResponseStatus.ERROR, "Error de registro.", null, errors));
-        	  throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de registro")
-        	  .errors(errors)
-        	  .build();
+            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, "Error de registro.")
+                .errors(errors)
+                .build();
         }
 
-        //¿Todo correcto? Pues creamos al usuario
+        // Crear el usuario
         UsuarioPL usuario = new UsuarioPL();
         usuario.setUsername(signupRequest.getUsername());
         usuario.setEmail(signupRequest.getEmail());
@@ -149,30 +144,32 @@ public class AuthController {
         
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
         usuario.setPassword(encodedPassword);
-        
         usuario.setEnabled(true);
-        
         usuario.setFechaRegistro(new Date());
         
         Optional<RolPL> rolUsuario = rolPLService.getRol(Rol.USUARIO.toString());
         
-        if(rolUsuario.isPresent()) {
-        	usuario.getRoles().add(rolUsuario.get());
+        if (rolUsuario.isPresent()) {
+            usuario.getRoles().add(rolUsuario.get());
         } else {
-        	throw new PresentationException.Builder(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al registrar al usuario.")
-        	.build();
+            throw new PresentationException.Builder(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al registrar al usuario.")
+                .build();
         }
+
+        // Guardar el usuario primero
+        this.usuarioPLService.register(usuario); // Aquí se guarda el usuario en la base de datos
         
+        // Crear el carrito de compras con el usuario ya guardado
         CarritoCompraPL carritoCompra = new CarritoCompraPL();
-        carritoCompra.setUsuario(usuario);
+        carritoCompra.setUsuario(usuario); // Aquí ya existe en la base de datos
         carritoCompra.setItemsCarrito(new ArrayList<>());
+        
+        // Guardar el carrito
         this.carritoRepository.save(carritoCompra);
 
-        this.usuarioPLService.register(usuario);
-
         return ResponseEntity.ok(new ApiResponseBody.Builder("Registro exitoso.")
-        		.status(ResponseStatus.SUCCESS)
-        		.build());
+            .status(ResponseStatus.SUCCESS)
+            .build());
     }
     
     @PostMapping("/logout")
