@@ -83,9 +83,10 @@ CREATE TABLE USER_ROLES (
 
 CREATE TABLE CATEGORIAS (
     ID            		BIGINT,
-    NOMBRE        		VARCHAR(50)    UNIQUE		NOT NULL, --No podrá haber dos categorías con el mismo nombre.
-    DESCRIPCION   		VARCHAR(150)						,
+    NOMBRE        		VARCHAR(50)    UNIQUE		NOT NULL,
+    DESCRIPCION   		VARCHAR(1000)						,
     IMG_URL       		VARCHAR(255)						,
+    IMG_ORIGEN       	VARCHAR(20)							,
     
     PRIMARY KEY (ID)
 );

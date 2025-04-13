@@ -39,16 +39,19 @@ INSERT INTO USER_ROLES (ID_USER, ID_ROL) VALUES
 */
 
 
-INSERT INTO CATEGORIAS (ID, NOMBRE, DESCRIPCION, IMG_URL) VALUES
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Frutas', 'Frutas frescas y naturales', 'img/frutas.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Lácteos', 'Productos derivados de la leche', 'img/lacteos.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Carnes', 'Carnes frescas de gran calidad', 'img/carnes.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Bebidas', 'Refrescos y bebidas variadas', 'img/bebidas.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Verduras', 'Verduras frescas y orgánicas', 'img/verduras.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Congelados', 'Productos congelados de todo tipo', 'img/congelados.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Panadería', 'Panes y productos de pastelería', 'img/panaderia.jpg'),
-(NEXT VALUE FOR CATEGORIAS_SEQ, 'Snacks', 'Comida rápida y snacks variados', 'img/snacks.jpg');
-
+INSERT INTO CATEGORIAS (ID, NOMBRE, DESCRIPCION, IMG_URL, IMG_ORIGEN) VALUES
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Frutas', 'Frutas frescas y naturales, cultivadas con esmero para ofrecerte lo mejor de la naturaleza. Desde jugosas manzanas hasta dulces naranjas, nuestras frutas son una fuente perfecta de vitaminas y frescura, ideales para disfrutar en cualquier momento del día.', 
+'c_frutas.jpg', 'STATIC'),
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Lácteos', 'Productos derivados de la leche de alta calidad, que aportan un delicioso sabor y una nutrición excepcional. Desde quesos curados hasta yogures cremosos, cada producto está cuidadosamente elaborado para garantizarte una experiencia inigualable.', 
+'c_lacteos.jpg', 'STATIC'),
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Carnes', 'Carnes frescas, tiernas y sabrosas, provenientes de los mejores proveedores. Cada corte ha sido seleccionado para asegurar la máxima calidad y sabor en cada preparación. Ya sea para un asado en familia o un guiso casero, nuestras carnes son siempre la mejor opción.', 
+'c_carnes.jpg', 'STATIC'),
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Bebidas', 'Refrescos y bebidas variadas que van desde las más refrescantes hasta las más exóticas. Ya sea que prefieras una bebida energética, un refresco con gas o una bebida saludable, tenemos opciones para cada gusto y ocasión.', 
+'c_bebidas.jpg', 'STATIC'),
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Verduras', 'Verduras frescas y orgánicas, llenas de nutrientes y sabor. Desde lechugas crujientes hasta zanahorias dulces y frescas, nuestras verduras son cultivadas sin químicos ni pesticidas, brindándote lo más puro de la tierra para una alimentación sana y deliciosa.', 
+'c_verduras.jpg', 'STATIC'),
+(NEXT VALUE FOR CATEGORIAS_SEQ, 'Panadería', 'Panes y productos de pastelería elaborados con ingredientes frescos y de la más alta calidad. Desde baguettes crujientes hasta pasteles esponjosos, cada bocado es una explosión de sabor, ideal para acompañar tus desayunos, meriendas o cualquier momento especial.', 
+'c_panaderia.jpg', 'STATIC');
 
 /*
 * PRODUCTOS

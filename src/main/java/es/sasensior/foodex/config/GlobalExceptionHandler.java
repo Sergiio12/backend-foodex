@@ -3,6 +3,7 @@ package es.sasensior.foodex.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -97,6 +98,8 @@ public class GlobalExceptionHandler {
     	logger.error(ex.getMessage());
     	
         ApiResponseBody apiResponseBody = new ApiResponseBody.Builder(UNEXCEPTED_SERVER_ERROR).status(ResponseStatus.ERROR).build();
-        return ResponseEntity.internalServerError().body(apiResponseBody);
+        return ResponseEntity.internalServerError()
+        		.contentType(MediaType.APPLICATION_JSON)
+        		.body(apiResponseBody);
     }
 }

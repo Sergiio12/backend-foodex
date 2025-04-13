@@ -94,6 +94,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/api/auth/signin/**").permitAll()
                     .requestMatchers("/api/auth/signup/**").permitAll()
+                    .requestMatchers("/api/images/**").permitAll()
                     .requestMatchers("/favicon.ico").permitAll()
                     .requestMatchers("/WEB-INF/**").permitAll()
                     .requestMatchers("/img/**", "/css/**", "/js/**").permitAll()

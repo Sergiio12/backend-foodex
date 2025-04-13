@@ -7,6 +7,7 @@ import org.dozer.DozerBeanMapper;
 import org.springframework.stereotype.Service;
 
 import es.sasensior.foodex.business.model.Categoria;
+import es.sasensior.foodex.business.model.ImagenOrigen;
 import es.sasensior.foodex.business.services.CategoriaService;
 import es.sasensior.foodex.integration.dao.CategoriaPL;
 import es.sasensior.foodex.integration.repositories.CategoriaRepository;
@@ -19,7 +20,7 @@ import lombok.Getter;
 public class CategoriaServiceImpl implements CategoriaService {
 	
 	private final CategoriaRepository categoriaRepository;
-	private DozerBeanMapper mapper;
+	private final DozerBeanMapper mapper;
 	
 	public CategoriaServiceImpl(CategoriaRepository categoriaRepository, DozerBeanMapper mapper) {
 		this.categoriaRepository = categoriaRepository;
@@ -28,56 +29,65 @@ public class CategoriaServiceImpl implements CategoriaService {
 
 	@Override
 	public List<Categoria> getAll() {
-		return this.convertCategoriasPLToCategorias(this.categoriaRepository.findAll());
+		return convertCategoriasPLToCategorias(this.categoriaRepository.findAll());
 	}
 
 	@Override
 	public Optional<Categoria> getCategoria(Long idCategoria) {
 	    Optional<CategoriaPL> categoriaPL = this.categoriaRepository.findById(idCategoria);
-	    
-	    return Optional.of(categoriaPL.map(categoria -> mapper.map(categoria, Categoria.class))
-	                      .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado ninguna categoría con ese id.")));
+	    return categoriaPL.map(categoria -> mapper.map(categoria, Categoria.class))
+	            .or(() -> { throw new EntityNotFoundException("No se ha encontrado ninguna categoría con ese id."); });
 	}
-
 
 	@Override
 	@Transactional
-	public void createCategoria(Categoria categoria) {
-		
-		if(categoria.getId() != null) {
+	public Categoria createCategoria(Categoria categoria) {
+		if (categoria.getId() != null) {
 			throw new IllegalArgumentException("El id de la categoría a crear ha de ser nulo.");
 		}
 		
-		if(this.categoriaRepository.existsByNombre(categoria.getNombre())) {
+		if (this.categoriaRepository.existsByNombre(categoria.getNombre())) {
 			throw new IllegalStateException("Ya existe una categoría con ese mismo nombre.");
 		}
 		
-		this.categoriaRepository.save(mapper.map(categoria, CategoriaPL.class));
+		// Si no se especifica el origen de la imagen, se asume STATIC por defecto
+		if (categoria.getImgOrigen() == null) {
+			categoria.setImgOrigen(ImagenOrigen.STATIC);
+		}
 		
+		CategoriaPL categoriaPL = mapper.map(categoria, CategoriaPL.class);
+		CategoriaPL savedCategoriaPL = this.categoriaRepository.save(categoriaPL);
+		return mapper.map(savedCategoriaPL, Categoria.class);
 	}
 
 	@Override
 	@Transactional
-	public void updateCategoria(Categoria categoria) {
-		
-		if(categoria.getId() == null) {
+	public Categoria updateCategoria(Categoria categoria) {
+		if (categoria.getId() == null) {
 			throw new IllegalArgumentException("Debes especificar un id para actualizar la categoría");
 		}
 		
-		this.categoriaRepository.save(mapper.map(categoria, CategoriaPL.class));
+		if (!this.categoriaRepository.existsById(categoria.getId())) {
+			throw new EntityNotFoundException("Categoría no encontrada para el id: " + categoria.getId());
+		}
 		
+		// Si no se especifica origen, aseguramos uno por defecto
+		if (categoria.getImgOrigen() == null) {
+			categoria.setImgOrigen(ImagenOrigen.STATIC);
+		}
+		
+		CategoriaPL categoriaPL = mapper.map(categoria, CategoriaPL.class);
+		CategoriaPL updatedCategoriaPL = this.categoriaRepository.save(categoriaPL);
+		return mapper.map(updatedCategoriaPL, Categoria.class);
 	}
 	
 	// ********************************************
-	//
 	// Private Methods
-	//
 	// ********************************************
 		
-		private List<Categoria> convertCategoriasPLToCategorias(List<CategoriaPL> categoriaPL) {
-			return categoriaPL.stream()
-					.map(x -> mapper.map(x, Categoria.class))
-					.toList();
-		}
-
+	private List<Categoria> convertCategoriasPLToCategorias(List<CategoriaPL> categoriaPLList) {
+		return categoriaPLList.stream()
+				.map(x -> mapper.map(x, Categoria.class))
+				.toList();
+	}
 }

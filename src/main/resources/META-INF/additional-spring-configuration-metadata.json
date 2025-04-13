@@ -8,5 +8,15 @@
     "name": "foodex.app.jwt-expiration-ms",
     "type": "java.lang.String",
     "description": "Tiempo de expiración del token en milisegundos"
+  },
+  {
+    "name": "upload.dir",
+    "type": "java.lang.String",
+    "description": "Ruta en la que se almacenarán las imágenes subidas por un usuario."
+  },
+  {
+    "name": "static.dir",
+    "type": "java.lang.String",
+    "description": "Ruta de imágenes estáticas."
   }
 ]}
