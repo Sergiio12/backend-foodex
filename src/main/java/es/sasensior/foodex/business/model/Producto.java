@@ -14,6 +14,7 @@ public class Producto {
 	private Integer stock;
 	private Boolean descatalogado;
 	private String imgUrl;
+	private ImagenOrigen imgOrigen;
 	private Date fechaAlta;
 
 }

@@ -9,10 +9,12 @@ public interface ProductoService {
 	
 	List<Producto> getAll();
 	
+	List<Producto> getProductosByCategoria(Long idCategoria);
+	
 	Optional<Producto> getProducto(Long idProducto);
 	
 	void createProducto(Producto producto);
 	
-	void updateProducto(Producto producto);
+	Producto updateProducto(Producto producto);
 
 }

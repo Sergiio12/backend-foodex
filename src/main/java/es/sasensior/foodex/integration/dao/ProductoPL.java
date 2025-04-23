@@ -2,8 +2,11 @@ package es.sasensior.foodex.integration.dao;
 
 import java.util.Date;
 
+import es.sasensior.foodex.business.model.ImagenOrigen;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,4 +51,7 @@ public class ProductoPL {
 	@NotNull
 	private Date fechaAlta;
 
+	@Enumerated(EnumType.STRING)
+    private ImagenOrigen imgOrigen;
+	
 }

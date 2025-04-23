@@ -31,7 +31,18 @@ public class ProductoServiceImpl implements ProductoService {
         List<ProductoPL> productosPL = productoRepository.findAll();
         return convertProductosPLToProductos(productosPL);
     }
+    
+    @Override
+    public List<Producto> getProductosByCategoria(Long idCategoria) {
+        categoriaRepository.findById(idCategoria)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "No se ha encontrado la categoría con id " + idCategoria));
 
+        List<ProductoPL> productosPL = productoRepository.findByCategoriaId(idCategoria);
+        return convertProductosPLToProductos(productosPL);
+    }
+
+    
     @Override
     public Optional<Producto> getProducto(Long idProducto) {
         ProductoPL productoPL = productoRepository.findById(idProducto)
@@ -43,7 +54,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Transactional
     public void createProducto(Producto producto) {
         
-    	if (producto.getId() != null) {
+        if (producto.getId() != null) {
             throw new IllegalStateException("El id del producto a crear debe ser nulo.");
         }
 
@@ -71,8 +82,8 @@ public class ProductoServiceImpl implements ProductoService {
             throw new IllegalStateException("Debes especificar el id de una categoría existente.");
         }
         
-        if(producto.getFechaAlta() != null) {
-        	throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta. Déjalo nulo.");
+        if (producto.getFechaAlta() != null) {
+            throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta. Déjalo nulo.");
         }
 
         // No se debe modificar la categoría en la creación
@@ -81,21 +92,20 @@ public class ProductoServiceImpl implements ProductoService {
         }
         
         CategoriaPL categoriaPL = this.categoriaRepository.findById(producto.getCategoria().getId())
-        		.orElseThrow(() -> new EntityNotFoundException("No se ha encontrado la categoría que buscas."));
+                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado la categoría que buscas."));
         
         ProductoPL productoPL = mapper.map(producto, ProductoPL.class);
         productoPL.setCategoria(categoriaPL);
         productoPL.setFechaAlta(new Date());
-        System.out.println(productoPL.toString());
         
+        // Guardar el nuevo producto
         this.productoRepository.save(productoPL);
-    	
     }
 
     @Override
     @Transactional
-    public void updateProducto(Producto producto) {
-    	
+    public Producto updateProducto(Producto producto) {
+        
         if (producto.getId() == null) {
             throw new IllegalStateException("Debe especificarse el id del producto en la solicitud para actualizarlo.");
         }
@@ -132,6 +142,8 @@ public class ProductoServiceImpl implements ProductoService {
 
         // Guardar los cambios
         productoRepository.save(productoExistente);
+
+		return mapper.map(productoExistente, Producto.class);
     }
 
     // ********************************************

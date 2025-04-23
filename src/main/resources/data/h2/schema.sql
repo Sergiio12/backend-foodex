@@ -82,11 +82,11 @@ CREATE TABLE USER_ROLES (
 -- ******************************************************
 
 CREATE TABLE CATEGORIAS (
-    ID            		BIGINT,
-    NOMBRE        		VARCHAR(50)    UNIQUE		NOT NULL,
-    DESCRIPCION   		VARCHAR(1000)						,
-    IMG_URL       		VARCHAR(255)						,
-    IMG_ORIGEN       	VARCHAR(20)							,
+    ID             BIGINT 					  ,
+    NOMBRE         VARCHAR(50) 		  NOT NULL,
+    DESCRIPCION    VARCHAR(1000)			  ,
+    IMG_URL        VARCHAR(255)				  ,
+    IMG_ORIGEN     VARCHAR(20)				  ,
     
     PRIMARY KEY (ID)
 );
@@ -100,6 +100,7 @@ CREATE TABLE PRODUCTOS (
     STOCK          		INTEGER 		NOT NULL,
     DESCATALOGADO  		BOOLEAN 		NOT NULL,
     IMG_URL        		VARCHAR(255)			,
+    IMG_ORIGEN     VARCHAR(20)				  ,
     FECHA_ALTA    		TIMESTAMP 		NOT NULL,
     
     PRIMARY KEY (ID),
