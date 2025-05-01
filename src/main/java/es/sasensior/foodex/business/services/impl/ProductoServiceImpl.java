@@ -129,21 +129,24 @@ public class ProductoServiceImpl implements ProductoService {
             throw new IllegalStateException("El estado de descatalogado no puede ser nulo.");
         }
 
-        if (producto.getCategoria() != null) {
-            throw new IllegalStateException("La categoría no se puede modificar.");
-        }
+        // Mantener la categoría original ignorando la recibida
+        CategoriaPL categoriaOriginal = productoExistente.getCategoria();
+        producto.setCategoria(mapper.map(categoriaOriginal, Categoria.class));
+        
+        // Mantener fecha alta original
+        producto.setFechaAlta(productoExistente.getFechaAlta());
 
-        // La categoría no se puede modificar, solo mantener la existente
-        producto.setCategoria(mapper.map(productoExistente.getCategoria(), Categoria.class));
-        producto.setFechaAlta(productoExistente.getFechaAlta()); // Mantener la fecha original
-
-        // Mapear el producto actualizado
-        mapper.map(producto, productoExistente);
+        // Actualizar solo campos permitidos
+        productoExistente.setNombre(producto.getNombre());
+        productoExistente.setDescripcion(producto.getDescripcion());
+        productoExistente.setPrecio(producto.getPrecio());
+        productoExistente.setStock(producto.getStock());
+        productoExistente.setDescatalogado(producto.getDescatalogado());
 
         // Guardar los cambios
         productoRepository.save(productoExistente);
 
-		return mapper.map(productoExistente, Producto.class);
+        return mapper.map(productoExistente, Producto.class);
     }
 
     // ********************************************
