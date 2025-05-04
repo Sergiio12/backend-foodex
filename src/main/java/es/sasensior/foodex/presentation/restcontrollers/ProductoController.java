@@ -116,47 +116,48 @@ public class ProductoController {
     /**
      * Actualizar un producto existente
      */
-    @PutMapping
-    public ResponseEntity<?> updateProducto(@RequestBody Producto producto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
+
+        producto.setId(id);
         try {
-            productoService.updateProducto(producto);
+            Producto productoActualizado = productoService.updateProducto(producto);
+            return ResponseEntity.ok(new ApiResponseBody.Builder("Producto actualizado")
+                    .status(ResponseStatus.SUCCESS)
+                    .data(productoActualizado)
+                    .build());
         } catch (EntityNotFoundException e) {
-            throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage())
-            	.build();
-        } catch(IllegalStateException | IllegalArgumentException e) {
-        	throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage())
-        	.build();
+        	throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage()).build();
+        } catch (IllegalArgumentException e) {
+        	throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage()).build();
         }
-        
-        return ResponseEntity.ok(new ApiResponseBody.Builder("Producto actualizado correctamente.")
-                .status(ResponseStatus.SUCCESS)
-                .build());
     }
-    
+
     @PostMapping("/{id}/upload-image")
-    public ResponseEntity<ApiResponseBody> uploadImage(@PathVariable Long id, 
-                                                       @RequestParam MultipartFile file) {
+    public ResponseEntity<ApiResponseBody> uploadImage(
+            @PathVariable Long id, 
+            @RequestParam MultipartFile file) {
         try {
             Optional<Producto> optionalProducto = productoService.getProducto(id);
             if (!optionalProducto.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ApiResponseBody.Builder("No se ha encontrado el producto que buscas.")
-                                .status(ResponseStatus.ERROR)
-                                .build());
+                    .body(new ApiResponseBody.Builder("No se ha encontrado el producto que buscas.")
+                            .status(ResponseStatus.ERROR)
+                            .build());
             }
+            
             Producto producto = optionalProducto.get();
-
             String imageUrl = imageService.persistImage(file);
-
+            
             producto.setImgUrl(imageUrl);
             producto.setImgOrigen(ImagenOrigen.UPLOAD);
-
+            
             Producto updatedProducto = productoService.updateProducto(producto);
-
+            
             return ResponseEntity.ok(new ApiResponseBody.Builder("Imagen de producto subida y asociada correctamente.")
-                    .status(ResponseStatus.SUCCESS)
-                    .data(updatedProducto)
-                    .build());
+                .status(ResponseStatus.SUCCESS)
+                .data(updatedProducto)
+                .build());
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

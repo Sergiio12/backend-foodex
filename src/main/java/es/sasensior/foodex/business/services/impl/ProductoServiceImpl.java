@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.dozer.DozerBeanMapper;
 import org.springframework.stereotype.Service;
 
-import es.sasensior.foodex.business.model.Categoria;
 import es.sasensior.foodex.business.model.Producto;
 import es.sasensior.foodex.business.services.ProductoService;
 import es.sasensior.foodex.integration.dao.CategoriaPL;
@@ -105,48 +104,23 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public Producto updateProducto(Producto producto) {
-        
-        if (producto.getId() == null) {
-            throw new IllegalStateException("Debe especificarse el id del producto en la solicitud para actualizarlo.");
-        }
-
         ProductoPL productoExistente = productoRepository.findById(producto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró ningún producto con ese id."));
+            .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
 
         if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni estar vacío.");
+            throw new IllegalArgumentException("Nombre es requerido");
         }
 
-        if (producto.getPrecio() == null) {
-            throw new IllegalStateException("El precio del producto no puede ser nulo.");
-        }
-
-        if (producto.getStock() == null) {
-            throw new IllegalStateException("El stock del producto no puede ser nulo.");
-        }
-
-        if (producto.getDescatalogado() == null) {
-            throw new IllegalStateException("El estado de descatalogado no puede ser nulo.");
-        }
-
-        // Mantener la categoría original ignorando la recibida
-        CategoriaPL categoriaOriginal = productoExistente.getCategoria();
-        producto.setCategoria(mapper.map(categoriaOriginal, Categoria.class));
-        
-        // Mantener fecha alta original
-        producto.setFechaAlta(productoExistente.getFechaAlta());
-
-        // Actualizar solo campos permitidos
         productoExistente.setNombre(producto.getNombre());
         productoExistente.setDescripcion(producto.getDescripcion());
         productoExistente.setPrecio(producto.getPrecio());
         productoExistente.setStock(producto.getStock());
         productoExistente.setDescatalogado(producto.getDescatalogado());
+        
+        productoExistente.setImgUrl(producto.getImgUrl());
+        productoExistente.setImgOrigen(producto.getImgOrigen());
 
-        // Guardar los cambios
-        productoRepository.save(productoExistente);
-
-        return mapper.map(productoExistente, Producto.class);
+        return mapper.map(productoRepository.save(productoExistente), Producto.class);
     }
 
     // ********************************************
