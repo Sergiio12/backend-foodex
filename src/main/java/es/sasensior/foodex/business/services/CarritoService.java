@@ -10,8 +10,10 @@ public interface CarritoService {
 	
 	void addProductoToCarrito(Long idProducto, int cantidad);
 	
-	void removeProductoFromCarrito(Long idProducto, int cantidad);
+	Optional<CarritoCompra> modifyProductoInCarrito(Long idProducto, int nuevaCantidad);
 	
-	void removeAllProductosFromCarrito();
+	Optional<CarritoCompra> removeProductoFromCarrito(Long idProducto);
+	
+	Optional<CarritoCompra> removeAllProductosFromCarrito();
 	
 }

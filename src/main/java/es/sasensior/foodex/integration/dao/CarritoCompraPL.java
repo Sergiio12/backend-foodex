@@ -5,6 +5,7 @@ import java.util.List;
 import es.sasensior.foodex.security.integration.dao.UsuarioPL;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,8 +30,11 @@ public class CarritoCompraPL {
 	@JoinColumn(name = "ID_USUARIO", nullable = false)
 	private UsuarioPL usuario;
 	
-	@OneToMany(mappedBy = "carrito", cascade = CascadeType.ALL, orphanRemoval = true)
-	//@JsonManagedReference
-	private List<ItemCarritoPL> itemsCarrito;
+	@OneToMany(
+	    mappedBy = "carrito", 
+	    cascade = CascadeType.ALL, 
+	    orphanRemoval = true,
+	    fetch = FetchType.EAGER)
+    private List<ItemCarritoPL> itemsCarrito;
 	
 }

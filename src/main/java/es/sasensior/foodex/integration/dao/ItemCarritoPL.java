@@ -18,7 +18,6 @@ public class ItemCarritoPL {
 	@Id
 	@ManyToOne
     @JoinColumn(name = "ID_CARRITO", nullable = false)
-	// 
 	private CarritoCompraPL carrito;
 	
 	@Id
