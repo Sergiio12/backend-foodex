@@ -24,7 +24,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthEntryPoint.class);
     
     @Autowired
-    private ObjectMapper objectMapper; //Convierte y lee objetos JSON.
+    private ObjectMapper objectMapper; 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {

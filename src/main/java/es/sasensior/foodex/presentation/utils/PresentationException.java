@@ -20,7 +20,6 @@ public class PresentationException extends RuntimeException {
 		this.apiResponseBody = new ApiResponseBody.Builder(builder.message).status(ResponseStatus.ERROR).data(builder.data).errors(builder.errors).build();
 	}
 	
-	//Creamos clase interna para el patrón 'builder'.
 	public static class Builder {
 		private HttpStatus httpStatus;
 		private String message;

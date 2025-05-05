@@ -26,27 +26,27 @@ public class JwtUtils {
 	private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${foodex.app.jwt-secret}")
-    private String jwtSecret; //Clave secreta para firmar los tokens.
+    private String jwtSecret; 
 
     @Value("${foodex.app.jwt-expiration-ms}")
-    private int jwtExpirationMs; //Tiempo de expiración del token.
+    private int jwtExpirationMs;
 
     public String generateJwtToken(Authentication authentication) {
 
         UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
 
-        List<String> roles = usuarioPL.getAuthorities().stream().map(x -> x.toString()).toList(); //Extrae todos los roles del usuario:
+        List<String> roles = usuarioPL.getAuthorities().stream().map(x -> x.toString()).toList();
         
         String nombreCompleto = usuarioPL.getFirstName() + " " + usuarioPL.getLastName();
 
         return Jwts.builder()
-                .setSubject(usuarioPL.getUsername()) //Define el nombre de usuario como el dueño del token.
-                .claim("roles", roles) //Añade los roles al token.
-                .claim("nombre", nombreCompleto) //Añade el nombre completo al token.
-                .setIssuedAt(new Date(System.currentTimeMillis())) //Fecha de emisión.
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) //Fecha de expiracion
-                .signWith(key(), SignatureAlgorithm.HS256) //Firma con clave secreta.
-                .compact(); //Construye el token final con formado String
+                .setSubject(usuarioPL.getUsername())
+                .claim("roles", roles)
+                .claim("nombre", nombreCompleto)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(key(), SignatureAlgorithm.HS256) 
+                .compact(); 
     }
     
     /**
@@ -83,12 +83,6 @@ public class JwtUtils {
 
         return false;
     }
-
-    // *************************************************************************************
-    //
-    // PRIVATE METHODS
-    //
-    // *************************************************************************************
    
     /**
      * Convierte la clave secreta de String a un Key utilizando BASE64.decode(). Es necesario porque JWT usa claves Key en formato binario, no cadenas de texto.

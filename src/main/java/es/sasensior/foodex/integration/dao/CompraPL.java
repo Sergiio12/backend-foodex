@@ -33,7 +33,7 @@ public class CompraPL {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPRAS_SEQ")
 	private Long id;
 	
-	@ManyToOne //Muchas compras por un cliente.
+	@ManyToOne 
 	@JoinColumn(name = "ID_USUARIO", nullable = false, unique = false)
 	private UsuarioPL usuario;
 	

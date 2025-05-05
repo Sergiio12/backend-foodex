@@ -74,7 +74,7 @@ INSERT INTO PRODUCTOS (ID, ID_CATEGORIA, NOMBRE, DESCRIPCION, PRECIO, STOCK, DES
 (NEXT VALUE FOR PRODUCTOS_SEQ, 2, 'Crema Pastelera', 'Crema pastelera para repostería', 2.00, 65, false, 'crema_pastelera.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 2, 'Leche de Coco', 'Leche de coco sin conservantes', 3.10, 40, false, 'leche_coco.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 2, 'Ricotta', 'Ricotta fresca de vaca', 3.80, 50, false, 'ricotta.jpg', 'STATIC', CURRENT_TIMESTAMP),
-(NEXT VALUE FOR PRODUCTOS_SEQ, 2, 'Manteca de Cerdo', 'Manteca de cerdo para cocinar', 2.10, 80, false, 'manteca_cerdo.jpg', 'STATIC', CURRENT_TIMESTAMP),
+(NEXT VALUE FOR PRODUCTOS_SEQ, 3, 'Manteca de Cerdo', 'Manteca de cerdo para cocinar', 2.10, 80, false, 'manteca_cerdo.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 3, 'Costillas de Cerdo', 'Costillas de cerdo a la barbacoa', 10.50, 55, false, 'costillas_cerdo.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 3, 'Pavo', 'Pavo entero fresco', 15.20, 30, false, 'pavo.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 3, 'Chuletas de Cordero', 'Chuletas de cordero tiernas', 13.80, 25, false, 'chuletas_cordero.jpg', 'STATIC', CURRENT_TIMESTAMP),

@@ -1,4 +1,4 @@
-package es.sasensior.foodex;
+package es.sasensior.foodex.test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

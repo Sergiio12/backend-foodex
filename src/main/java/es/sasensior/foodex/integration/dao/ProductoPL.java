@@ -28,7 +28,7 @@ public class ProductoPL {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PRODUCTOS_SEQ")
 	private Long id;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST) //Esto es por si creamos una categoría que no existe.
+	@ManyToOne(cascade = CascadeType.PERSIST) 
 	@JoinColumn(name = "ID_CATEGORIA", nullable = false)
 	private CategoriaPL categoria;
 	

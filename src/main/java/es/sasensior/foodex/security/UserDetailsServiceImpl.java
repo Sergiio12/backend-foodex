@@ -29,11 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        // Busca el usuario en la base de datos a través del repositorio.
         UsuarioPL usuarioPL = usuarioPLRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username " + username));
 
-        // Convierte el usuario obtenido en una instancia de UserDetailsImpl para que Spring Security pueda manejarlo.
         return usuarioPL;
     }
 }

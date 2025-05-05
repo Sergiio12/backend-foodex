@@ -109,12 +109,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // *************************************************************************************
-    //
-    // PRIVATE METHODS
-    //
-    // *************************************************************************************
-
     /**
      * Configura el proveedor de autenticación basado en la base de datos (DAO).
      * Usa BCrypt para verificar las contraseñas almacenadas de forma segura.

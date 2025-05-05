@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "PRODUCTOS_COMPRAS")
-@IdClass(ProductoCompraIdPL.class) //Clave compuesta.
+@IdClass(ProductoCompraIdPL.class)
 public class ProductoCompraPL {
 	
 	@Id

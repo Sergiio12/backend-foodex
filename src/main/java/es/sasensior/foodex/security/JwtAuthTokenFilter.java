@@ -31,23 +31,23 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 			 
 			 String requestURI = request.getRequestURI();
 			 
-			 String jwt = parseJwt(request); //Obtiene el token de la cabecera de autentificación.
+			 String jwt = parseJwt(request); 
 			 
-			 if (jwt != null && jwtUtils.validateJwtToken(jwt)) { //El token existe y es valido??
+			 if (jwt != null && jwtUtils.validateJwtToken(jwt)) { 
 				 
-				 String username = jwtUtils.getUserNameFromJwtToken(jwt); //¿A qué usuario pertenece ese token?
-				 UserDetails userDetails = userDetailsService.loadUserByUsername(username); //Cargamos datos del usuario.
+				 String username = jwtUtils.getUserNameFromJwtToken(jwt); 
+				 UserDetails userDetails = userDetailsService.loadUserByUsername(username); 
 				 
 				 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-	             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); //Añade los detalles de la solicitud.
+	             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); 
 	             
-	             SecurityContextHolder.getContext().setAuthentication(authentication); //Guarda la autenticación en el contexto de seguridad.
+	             SecurityContextHolder.getContext().setAuthentication(authentication); 
 			 }
 			 
 		 } catch(UsernameNotFoundException e) {
 			 logger.error("No se puede identificar al usuario del token proporcionado: ", e);
 		 
-		 } catch (Exception e) { //¿Es el token inválido o ha expirado?
+		 } catch (Exception e) {
 			 logger.error("No se puede establecer la autenticación del usuario: ", e);
 			 
 		 }
@@ -61,14 +61,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 	     String path = request.getServletPath();
 	     return path.equals("/auth/signin") || path.equals("/auth/signup");
 	 }
-	 
-	 // *************************************************************************************
-	 //
-	 // PRIVATE METHODS
-	 //
-	 // *************************************************************************************
 
-	 private String parseJwt(HttpServletRequest request) { //Esto es para buscar el token en la cabecera
+	 private String parseJwt(HttpServletRequest request) {
 	    	
 		String headerAuth = request.getHeader("Authorization"); 
 	        

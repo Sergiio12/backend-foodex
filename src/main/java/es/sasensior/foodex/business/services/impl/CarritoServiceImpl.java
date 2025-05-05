@@ -22,6 +22,13 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 
+/**
+ * Implementación del servicio para la gestión del carrito de compra.
+ * Proporciona funcionalidades para manipular el carrito de compra de un usuario,
+ * incluyendo añadir, modificar y eliminar productos.
+ * 
+ * @Service Indica que esta clase es un componente de servicio de Spring.
+ */
 @Getter
 @Service
 public class CarritoServiceImpl implements CarritoService {
@@ -34,7 +41,18 @@ public class CarritoServiceImpl implements CarritoService {
     @PersistenceContext
     private EntityManager entityManager;
     
-    public CarritoServiceImpl(CarritoRepository carritoRepository, ProductoRepository productoRepository, ItemCarritoRepository itemCarritoRepository, DozerBeanMapper mapper, EntityManager entityManager) {
+    /**
+     * Constructor para la inyección de dependencias.
+     *
+     * @param carritoRepository Repositorio para operaciones con carritos
+     * @param productoRepository Repositorio para operaciones con productos
+     * @param itemCarritoRepository Repositorio para operaciones con items del carrito
+     * @param mapper Mapeador para conversión entre entidades y modelos
+     * @param entityManager Gestor de entidades JPA
+     */
+    public CarritoServiceImpl(CarritoRepository carritoRepository, ProductoRepository productoRepository, 
+                             ItemCarritoRepository itemCarritoRepository, DozerBeanMapper mapper, 
+                             EntityManager entityManager) {
         this.carritoRepository = carritoRepository;
         this.productoRepository = productoRepository;
         this.itemCarritoRepository = itemCarritoRepository;
@@ -42,6 +60,11 @@ public class CarritoServiceImpl implements CarritoService {
         this.mapper = mapper;
     }
     
+    /**
+     * Obtiene el carrito de compra del usuario autenticado.
+     *
+     * @return Optional que contiene el carrito de compra si existe, vacío en caso contrario
+     */
     @Override
     public Optional<CarritoCompra> getCarrito() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -51,6 +74,14 @@ public class CarritoServiceImpl implements CarritoService {
             .map(carrito -> mapper.map(carrito, CarritoCompra.class));
     }
     
+    /**
+     * Añade un producto al carrito con la cantidad especificada.
+     *
+     * @param idProducto ID del producto a añadir
+     * @param cantidad Cantidad del producto a añadir
+     * @throws EntityNotFoundException Si no se encuentra el carrito o el producto
+     * @throws IllegalStateException Si el producto ya está en el carrito o no hay suficiente stock
+     */
     @Override
     @Transactional
     public void addProductoToCarrito(Long idProducto, int cantidad) {
@@ -79,6 +110,16 @@ public class CarritoServiceImpl implements CarritoService {
         }
     }
     
+    /**
+     * Modifica la cantidad de un producto en el carrito.
+     * Si la nueva cantidad es 0 o menor, elimina el producto del carrito.
+     *
+     * @param idProducto ID del producto a modificar
+     * @param nuevaCantidad Nueva cantidad del producto
+     * @return Optional con el carrito actualizado
+     * @throws EntityNotFoundException Si no se encuentra el carrito, producto o item
+     * @throws IllegalStateException Si no hay suficiente stock disponible
+     */
     @Override
     @Transactional
     public Optional<CarritoCompra> modifyProductoInCarrito(Long idProducto, int nuevaCantidad) {
@@ -108,6 +149,13 @@ public class CarritoServiceImpl implements CarritoService {
             .map(carritoPL -> mapper.map(carritoPL, CarritoCompra.class));
     }
 
+    /**
+     * Elimina un producto del carrito.
+     *
+     * @param idProducto ID del producto a eliminar
+     * @return Optional con el carrito actualizado
+     * @throws EntityNotFoundException Si no se encuentra el carrito o el producto no está en el carrito
+     */
     @Override
     @Transactional
     public Optional<CarritoCompra> removeProductoFromCarrito(Long idProducto) {
@@ -131,6 +179,12 @@ public class CarritoServiceImpl implements CarritoService {
         return Optional.of(mapper.map(carrito, CarritoCompra.class));
     }
 
+    /**
+     * Elimina todos los productos del carrito.
+     *
+     * @return Optional con el carrito vacío
+     * @throws EntityNotFoundException Si no se encuentra el carrito
+     */
     @Override
     @Transactional
     public Optional<CarritoCompra> removeAllProductosFromCarrito() {

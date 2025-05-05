@@ -17,7 +17,7 @@ public class CarritoCompra {
 	@JsonIgnore
 	private UsuarioPL usuario;
 	
-	@JsonManagedReference //Esto es necesario para que no se forme "un bucle infinito" en postman.
+	@JsonManagedReference
 	private List<ItemCarrito> itemsCarrito;
 
 }

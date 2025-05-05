@@ -17,6 +17,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Implementación del servicio para la gestión de productos.
+ * Proporciona funcionalidades CRUD para productos y métodos para buscar productos por categoría.
+ * 
+ * @Service Indica que esta clase es un componente de servicio de Spring.
+ * @RequiredArgsConstructor Genera un constructor con los campos finales para inyección de dependencias
+ */
 @RequiredArgsConstructor
 @Service
 public class ProductoServiceImpl implements ProductoService {
@@ -25,12 +32,24 @@ public class ProductoServiceImpl implements ProductoService {
     private final CategoriaRepository categoriaRepository;
     private final DozerBeanMapper mapper;
 
+    /**
+     * Obtiene todos los productos existentes.
+     *
+     * @return Lista de todos los productos
+     */
     @Override
     public List<Producto> getAll() {
         List<ProductoPL> productosPL = productoRepository.findAll();
         return convertProductosPLToProductos(productosPL);
     }
     
+    /**
+     * Obtiene los productos pertenecientes a una categoría específica.
+     *
+     * @param idCategoria ID de la categoría para filtrar productos
+     * @return Lista de productos de la categoría especificada
+     * @throws EntityNotFoundException Si no se encuentra la categoría con el ID especificado
+     */
     @Override
     public List<Producto> getProductosByCategoria(Long idCategoria) {
         categoriaRepository.findById(idCategoria)
@@ -41,7 +60,13 @@ public class ProductoServiceImpl implements ProductoService {
         return convertProductosPLToProductos(productosPL);
     }
 
-    
+    /**
+     * Obtiene un producto específico por su ID.
+     *
+     * @param idProducto ID del producto a buscar
+     * @return Optional que contiene el producto si existe
+     * @throws EntityNotFoundException Si no se encuentra ningún producto con el ID especificado
+     */
     @Override
     public Optional<Producto> getProducto(Long idProducto) {
         ProductoPL productoPL = productoRepository.findById(idProducto)
@@ -49,6 +74,19 @@ public class ProductoServiceImpl implements ProductoService {
         return Optional.of(mapper.map(productoPL, Producto.class));
     }
 
+    /**
+     * Crea un nuevo producto.
+     *
+     * @param producto Producto a crear
+     * @throws IllegalStateException Si:
+     *         - El ID del producto no es nulo
+     *         - El precio, stock o estado descatalogado son nulos
+     *         - La categoría es nula o no tiene ID
+     *         - Se intenta manipular manualmente la fecha de alta
+     *         - Se especifican detalles de categoría además del ID
+     * @throws IllegalArgumentException Si el nombre del producto es nulo o vacío
+     * @throws EntityNotFoundException Si no se encuentra la categoría especificada
+     */
     @Override
     @Transactional
     public void createProducto(Producto producto) {
@@ -85,7 +123,6 @@ public class ProductoServiceImpl implements ProductoService {
             throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta. Déjalo nulo.");
         }
 
-        // No se debe modificar la categoría en la creación
         if (producto.getCategoria().getNombre() != null || producto.getCategoria().getDescripcion() != null || producto.getCategoria().getImgUrl() != null) {
             throw new IllegalStateException("No especifiques el nombre, la descripción o la imagen de la categoría. Solo indica el id.");
         }
@@ -97,10 +134,17 @@ public class ProductoServiceImpl implements ProductoService {
         productoPL.setCategoria(categoriaPL);
         productoPL.setFechaAlta(new Date());
         
-        // Guardar el nuevo producto
         this.productoRepository.save(productoPL);
     }
 
+    /**
+     * Actualiza un producto existente.
+     *
+     * @param producto Producto con los datos actualizados
+     * @return El producto actualizado
+     * @throws EntityNotFoundException Si no se encuentra el producto a actualizar
+     * @throws IllegalArgumentException Si el nombre es nulo o vacío
+     */
     @Override
     @Transactional
     public Producto updateProducto(Producto producto) {
@@ -123,12 +167,12 @@ public class ProductoServiceImpl implements ProductoService {
         return mapper.map(productoRepository.save(productoExistente), Producto.class);
     }
 
-    // ********************************************
-    //
-    // Métodos Privados
-    //
-    // ********************************************
-
+    /**
+     * Convierte una lista de entidades ProductoPL a modelos Producto.
+     *
+     * @param productoPLList Lista de entidades ProductoPL
+     * @return Lista de modelos Producto
+     */
     private List<Producto> convertProductosPLToProductos(List<ProductoPL> productoPLList) {
         return productoPLList.stream()
                 .map(x -> mapper.map(x, Producto.class))

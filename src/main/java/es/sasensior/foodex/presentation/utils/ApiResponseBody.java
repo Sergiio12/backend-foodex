@@ -24,7 +24,7 @@ public class ApiResponseBody {
         this.errors = builder.errors;
     }
 
-    public static class Builder { //Patrón builder.
+    public static class Builder {
         private String message;
         private ResponseStatus status;
         private Object data;
