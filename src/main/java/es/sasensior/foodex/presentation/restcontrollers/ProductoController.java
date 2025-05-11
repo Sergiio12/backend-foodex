@@ -100,17 +100,21 @@ public class ProductoController {
      */
     @PostMapping
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
+        Producto createdProducto;
         try {
-            productoService.createProducto(producto);
+            createdProducto = productoService.createProducto(producto); // Guardar el producto creado
         } catch (IllegalStateException | IllegalArgumentException e) {
             throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage()).build();
         } catch(EntityNotFoundException e) {
-        	throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage()).build();
+            throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage()).build();
         }
         
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseBody.Builder("Producto creado correctamente.")
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+            new ApiResponseBody.Builder("Producto creado correctamente.")
                 .status(ResponseStatus.SUCCESS)
-                .build());
+                .data(createdProducto) // Incluir el producto en la respuesta
+                .build()
+        );
     }
 
     /**

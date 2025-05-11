@@ -89,7 +89,7 @@ public class ProductoServiceImpl implements ProductoService {
      */
     @Override
     @Transactional
-    public void createProducto(Producto producto) {
+    public Producto createProducto(Producto producto) {
         
         if (producto.getId() != null) {
             throw new IllegalStateException("El id del producto a crear debe ser nulo.");
@@ -99,42 +99,42 @@ public class ProductoServiceImpl implements ProductoService {
             throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni estar vacío.");
         }
 
-        if (producto.getPrecio() == null) {
-            throw new IllegalStateException("El precio del producto no puede ser nulo.");
+        if (producto.getPrecio() == null || producto.getPrecio() <= 0) {
+            throw new IllegalStateException("El precio debe ser un valor positivo.");
         }
 
-        if (producto.getStock() == null) {
-            throw new IllegalStateException("El stock del producto no puede ser nulo.");
+        if (producto.getStock() == null || producto.getStock() < 0) {
+            throw new IllegalStateException("El stock no puede ser negativo.");
         }
 
         if (producto.getDescatalogado() == null) {
             throw new IllegalStateException("El estado de descatalogado no puede ser nulo.");
         }
 
-        if (producto.getCategoria() == null) {
-            throw new IllegalStateException("La categoría no puede ser nula.");
-        }
-
-        if (producto.getCategoria().getId() == null) {
+        if (producto.getCategoria() == null || producto.getCategoria().getId() == null) {
             throw new IllegalStateException("Debes especificar el id de una categoría existente.");
         }
-        
+
         if (producto.getFechaAlta() != null) {
-            throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta. Déjalo nulo.");
+            throw new IllegalStateException("No puedes manipular manualmente el campo de fecha de alta.");
         }
 
-        if (producto.getCategoria().getNombre() != null || producto.getCategoria().getDescripcion() != null || producto.getCategoria().getImgUrl() != null) {
-            throw new IllegalStateException("No especifiques el nombre, la descripción o la imagen de la categoría. Solo indica el id.");
+        if (producto.getCategoria().getNombre() != null 
+            || producto.getCategoria().getDescripcion() != null 
+            || producto.getCategoria().getImgUrl() != null) {
+            throw new IllegalStateException("Solo se debe proporcionar el ID de la categoría.");
         }
-        
-        CategoriaPL categoriaPL = this.categoriaRepository.findById(producto.getCategoria().getId())
-                .orElseThrow(() -> new EntityNotFoundException("No se ha encontrado la categoría que buscas."));
-        
+
+        CategoriaPL categoriaPL = categoriaRepository.findById(producto.getCategoria().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada con ID: " + producto.getCategoria().getId()));
+
         ProductoPL productoPL = mapper.map(producto, ProductoPL.class);
         productoPL.setCategoria(categoriaPL);
         productoPL.setFechaAlta(new Date());
         
-        this.productoRepository.save(productoPL);
+        ProductoPL savedProductoPL = productoRepository.save(productoPL);
+        
+        return mapper.map(savedProductoPL, Producto.class);
     }
 
     /**

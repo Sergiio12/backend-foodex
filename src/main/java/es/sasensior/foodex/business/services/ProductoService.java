@@ -13,7 +13,7 @@ public interface ProductoService {
 	
 	Optional<Producto> getProducto(Long idProducto);
 	
-	void createProducto(Producto producto);
+	Producto createProducto(Producto producto);
 	
 	Producto updateProducto(Producto producto);
 

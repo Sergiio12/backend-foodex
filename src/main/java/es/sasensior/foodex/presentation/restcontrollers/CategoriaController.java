@@ -61,14 +61,16 @@ public class CategoriaController {
 	
 	@PostMapping
 	public ResponseEntity<ApiResponseBody> createCategoria(@RequestBody Categoria categoria) {
-		try {
-			this.categoriaService.createCategoria(categoria);
-		} catch(IllegalArgumentException | IllegalStateException e) {
-			throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage()).build();
-		}
-		return ResponseEntity.ok(new ApiResponseBody.Builder("Categoría creada con éxito.")
-			.status(ResponseStatus.SUCCESS)
-			.build());
+	    Categoria createdCategoria;
+	    try {
+	        createdCategoria = this.categoriaService.createCategoria(categoria); 
+	    } catch(IllegalArgumentException | IllegalStateException e) {
+	        throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage()).build();
+	    }
+	    return ResponseEntity.ok(new ApiResponseBody.Builder("Categoría creada con éxito.")
+	        .status(ResponseStatus.SUCCESS)
+	        .data(createdCategoria) 
+	        .build());
 	}
 	
 	@PutMapping("/{id}")
