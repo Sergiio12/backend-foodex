@@ -11,6 +11,8 @@ public interface CategoriaService {
 	
 	Optional<Categoria> getCategoria(Long idCategoria);
 	
+	void deleteCategoria(Long id);
+	
 	Categoria createCategoria(Categoria categoria);
 	
 	Categoria updateCategoria(Categoria categoria);

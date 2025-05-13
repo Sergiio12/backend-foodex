@@ -136,6 +136,24 @@ public class ProductoServiceImpl implements ProductoService {
         
         return mapper.map(savedProductoPL, Producto.class);
     }
+    
+    /**
+     * Elimina un producto existente por su ID. 
+     * Al eliminar el producto, se borrarán automáticamente todas sus referencias en:
+     * - Tabla PRODUCTOS_COMPRAS (histórico de compras)
+     * - Tabla ITEMS_CARRITO (carritos de usuarios)
+     * 
+     * @param idProducto ID del producto a eliminar
+     * @throws EntityNotFoundException Si no se encuentra ningún producto con el ID especificado
+     */
+    @Override
+    @Transactional
+    public void deleteProducto(Long idProducto) {
+        ProductoPL productoPL = productoRepository.findById(idProducto)
+            .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + idProducto));
+        
+        productoRepository.delete(productoPL);
+    }
 
     /**
      * Actualiza un producto existente.

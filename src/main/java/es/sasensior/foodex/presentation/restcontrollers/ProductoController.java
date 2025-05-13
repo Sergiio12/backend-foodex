@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,6 +116,30 @@ public class ProductoController {
                 .data(createdProducto) // Incluir el producto en la respuesta
                 .build()
         );
+    }
+    
+    /**
+     * Método para eliminar un producto.
+     * @param id Id del producto a eliminar.
+     * @return la respuesta.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseBody> deleteProducto(@PathVariable Long id) {
+        try {
+            productoService.deleteProducto(id);
+            return ResponseEntity.ok(
+                new ApiResponseBody.Builder("Producto eliminado exitosamente")
+                    .status(ResponseStatus.SUCCESS)
+                    .build()
+            );
+        } catch (EntityNotFoundException e) {
+            throw new PresentationException.Builder(HttpStatus.NOT_FOUND, e.getMessage()).build();
+        } catch (Exception e) {
+            throw new PresentationException.Builder(
+                HttpStatus.INTERNAL_SERVER_ERROR, 
+                "Error al eliminar el producto: " + e.getMessage()
+            ).build();
+        }
     }
 
     /**

@@ -10,7 +10,9 @@ import es.sasensior.foodex.business.model.Categoria;
 import es.sasensior.foodex.business.model.ImagenOrigen;
 import es.sasensior.foodex.business.services.CategoriaService;
 import es.sasensior.foodex.integration.dao.CategoriaPL;
+import es.sasensior.foodex.integration.dao.ProductoPL;
 import es.sasensior.foodex.integration.repositories.CategoriaRepository;
+import es.sasensior.foodex.integration.repositories.ProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -26,6 +28,7 @@ import lombok.Getter;
 public class CategoriaServiceImpl implements CategoriaService {
     
     private final CategoriaRepository categoriaRepository;
+    private final ProductoRepository productoRepository;
     private final DozerBeanMapper mapper;
     
     /**
@@ -34,8 +37,9 @@ public class CategoriaServiceImpl implements CategoriaService {
      * @param categoriaRepository Repositorio para operaciones con categorías
      * @param mapper Mapeador para conversión entre entidades y modelos
      */
-    public CategoriaServiceImpl(CategoriaRepository categoriaRepository, DozerBeanMapper mapper) {
+    public CategoriaServiceImpl(CategoriaRepository categoriaRepository, ProductoRepository productoRepository, DozerBeanMapper mapper) {
         this.categoriaRepository = categoriaRepository;
+        this.productoRepository = productoRepository;
         this.mapper = mapper;
     }
 
@@ -89,6 +93,22 @@ public class CategoriaServiceImpl implements CategoriaService {
         CategoriaPL categoriaPL = mapper.map(categoria, CategoriaPL.class);
         CategoriaPL savedCategoriaPL = this.categoriaRepository.save(categoriaPL);
         return mapper.map(savedCategoriaPL, Categoria.class);
+    }
+    
+    /**
+     * Método para eliminar una categoría.
+     * @param id El id de la categoría a eliminar.
+     */
+    @Override
+    @Transactional
+    public void deleteCategoria(Long id) {
+        CategoriaPL categoriaPL = categoriaRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada"));
+        
+        List<ProductoPL> productos = productoRepository.findByCategoriaId(id);
+        productoRepository.deleteAll(productos);
+        
+        categoriaRepository.delete(categoriaPL); 
     }
 
     /**
