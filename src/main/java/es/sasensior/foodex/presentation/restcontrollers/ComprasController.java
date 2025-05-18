@@ -81,7 +81,6 @@ public class ComprasController {
     @PostMapping
     public ResponseEntity<?> comprar(@RequestBody CompraRequestDTO compraRequestDTO) {
         try {
-            // Aquí puedes acceder a los parámetros del cuerpo de la solicitud:
             String comentario = compraRequestDTO.getComentario();
             Direccion direccion = compraRequestDTO.getDireccion();
             DatosContacto datosContacto = compraRequestDTO.getDatosContacto();

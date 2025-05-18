@@ -59,7 +59,7 @@ INSERT INTO CATEGORIAS (ID, NOMBRE, DESCRIPCION, IMG_URL, IMG_ORIGEN) VALUES
 
 
 INSERT INTO PRODUCTOS (ID, ID_CATEGORIA, NOMBRE, DESCRIPCION, PRECIO, STOCK, DESCATALOGADO, IMG_URL, IMG_ORIGEN, FECHA_ALTA) VALUES
-(NEXT VALUE FOR PRODUCTOS_SEQ, 1, 'Manzana Verde', 'Manzana verde crujiente', 1.40, 95, false, 'manzana_verde.jpg', 'STATIC', CURRENT_TIMESTAMP),
+(NEXT VALUE FOR PRODUCTOS_SEQ, 1, 'Manzana Verde', 'Manzana verde crujiente', 1.40, 10, false, 'manzana_verde.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 1, 'Mandarina', 'Mandarina dulce y jugosa', 1.50, 110, false, 'mandarina.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 1, 'Cereza', 'Cereza roja fresca', 3.20, 70, false, 'cereza.jpg', 'STATIC', CURRENT_TIMESTAMP),
 (NEXT VALUE FOR PRODUCTOS_SEQ, 1, 'Melocotón', 'Melocotón maduro y suave', 2.30, 85, false, 'melocoton.jpg', 'STATIC', CURRENT_TIMESTAMP),
