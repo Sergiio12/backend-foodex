@@ -1,5 +1,6 @@
 package es.sasensior.foodex.presentation.restcontrollers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +78,29 @@ public class ComprasController {
     		throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage())
     			.build();
     	}
+    }
+    
+    @GetMapping("/usuario/{username}")
+    public ResponseEntity<?> getComprasPorUsuario(@PathVariable String username) {
+        try {
+            List<CompraDTO> compras = compraService.getComprasByUsuarioUsername(username);
+            
+            if (compras.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(new ApiResponseBody.Builder("No se encontraron compras para el usuario")
+                        .status(ResponseStatus.SUCCESS)
+                        .build());
+            }
+            
+            return ResponseEntity.ok(new ApiResponseBody.Builder("Compras del usuario")
+                .status(ResponseStatus.SUCCESS)
+                .data(compras)
+                .build());
+                
+        } catch (IllegalStateException e) {
+            throw new PresentationException.Builder(HttpStatus.BAD_REQUEST, e.getMessage())
+                .build();
+        }
     }
     
     @PostMapping

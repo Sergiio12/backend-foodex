@@ -17,4 +17,6 @@ public interface CompraService {
 	
 	CompraDTO realizarCompra(String comentario, Direccion direccion, DatosContacto datosContacto);
 
+	List<CompraDTO> getComprasByUsuarioUsername(String username);
+
 }

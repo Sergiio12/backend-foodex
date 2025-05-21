@@ -173,6 +173,20 @@ public class CompraServiceImpl implements CompraService {
         
         return compraDTO;
     }
+    
+    /**
+     * Obtiene todas las compras que ha realizado un usuario, dado un id por parámetro.
+     * @param usuarioId es el id del usuario del que queremos obtener las compras.
+     */
+    @Override
+    public List<CompraDTO> getComprasByUsuarioUsername(String username) {
+        List<CompraPL> comprasPL = compraRepository.findByUsuarioUsername(username);
+        
+        return comprasPL.stream()
+            .map(this::convertCompraPLToCompra)
+            .map(this::mapCompraToCompraDTO)
+            .collect(Collectors.toList());
+    }
 
     /**
      * Convierte una entidad de persistencia CompraPL a un modelo de negocio Compra.

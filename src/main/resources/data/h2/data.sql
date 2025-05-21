@@ -17,16 +17,16 @@ INSERT INTO ROLES (ID, NAME) VALUES
 
 INSERT INTO USERS (ID, USERNAME, PASSWORD, EMAIL, FIRST_NAME, LAST_NAME, NAME, ENABLED, FECHA_REGISTRO) VALUES
 (NEXT VALUE FOR USERS_SEQ, 'sasensior', '$2a$10$yh4xQHbb8nS/8VIp0zCr8.nWnX1lw/OTo8o4fTVGzss7Lyewt3SoW', 'sasensior03@educarex.es', 'Asensio', 'Rodríguez', 'Sergio', true, '2025-02-19'),
-(NEXT VALUE FOR USERS_SEQ, 'jlopez', '$2a$10$abcd1234abcd1234abcd12abcd1234abcd1234abcd1234abcd12', 'jlopez@example.com', 'Juan', 'López', 'Juan López', true, '2025-01-15'),
-(NEXT VALUE FOR USERS_SEQ, 'mgarcia', '$2a$10$abcd5678abcd5678abcd56abcd5678abcd5678abcd5678abcd56', 'mgarcia@example.com', 'María', 'García', 'María García', true, '2025-02-01'),
-(NEXT VALUE FOR USERS_SEQ, 'cmartinez', '$2a$10$xyz98765xyz98765xyz98xyz98765xyz98765xyz98765xyz98', 'cmartinez@example.com', 'Carlos', 'Martínez', 'Carlos Martínez', false, '2025-02-10'),
-(NEXT VALUE FOR USERS_SEQ, 'lfernandez', '$2a$10$mnw65432mnw65432mnw65mnw65432mnw65432mnw65432mnw65', 'lfernandez@example.com', 'Laura', 'Fernández', 'Laura Fernández', true, '2025-02-15'),
-(NEXT VALUE FOR USERS_SEQ, 'psanchez', '$2a$10$qwe4321qwe4321qwe432qwe4321qwe4321qwe4321qwe432', 'psanchez@example.com', 'Pedro', 'Sánchez', 'Pedro Sánchez', true, '2025-02-18'),
-(NEXT VALUE FOR USERS_SEQ, 'adominguez', '$2a$10$rty5678rty5678rty567rty5678rty5678rty5678rty567', 'adominguez@example.com', 'Ana', 'Domínguez', 'Ana Domínguez', false, '2025-01-28'),
-(NEXT VALUE FOR USERS_SEQ, 'ldiaz', '$2a$10$zxc9876zxc9876zxc987zxc9876zxc9876zxc9876zxc987', 'ldiaz@example.com', 'Luis', 'Díaz', 'Luis Díaz', true, '2025-02-05'),
-(NEXT VALUE FOR USERS_SEQ, 'scastro', '$2a$10$vbn1234vbn1234vbn123vbn1234vbn1234vbn1234vbn123', 'scastro@example.com', 'Sofía', 'Castro', 'Sofía Castro', true, '2025-02-12'),
-(NEXT VALUE FOR USERS_SEQ, 'mortega', '$2a$10$asd4567asd4567asd456asd4567asd4567asd4567asd456', 'mortega@example.com', 'Manuel', 'Ortega', 'Manuel Ortega', false, '2025-02-14'),
-(NEXT VALUE FOR USERS_SEQ, 'ejimenez', '$2a$10$fgh6789fgh6789fgh678fgh6789fgh6789fgh6789fgh678', 'ejimenez@example.com', 'Elena', 'Jiménez', 'Elena Jiménez', true, '2025-02-19');
+(NEXT VALUE FOR USERS_SEQ, 'jlopez', '$2a$10$abcd1234abcd1234abcd12abcd1234abcd1234abcd1234abcd12', 'jlopez@example.com', 'Juan', 'López', 'Delgado', true, '2025-01-15'),
+(NEXT VALUE FOR USERS_SEQ, 'mgarcia', '$2a$10$abcd5678abcd5678abcd56abcd5678abcd5678abcd5678abcd56', 'mgarcia@example.com', 'María', 'García', 'López', true, '2025-02-01'),
+(NEXT VALUE FOR USERS_SEQ, 'cmartinez', '$2a$10$xyz98765xyz98765xyz98xyz98765xyz98765xyz98765xyz98', 'cmartinez@example.com', 'Carlos', 'Martínez', 'García', false, '2025-02-10'),
+(NEXT VALUE FOR USERS_SEQ, 'lfernandez', '$2a$10$mnw65432mnw65432mnw65mnw65432mnw65432mnw65432mnw65', 'lfernandez@example.com', 'Laura', 'Fernández', 'Martínez', true, '2025-02-15'),
+(NEXT VALUE FOR USERS_SEQ, 'psanchez', '$2a$10$qwe4321qwe4321qwe432qwe4321qwe4321qwe4321qwe432', 'psanchez@example.com', 'Pedro', 'Sánchez', 'Balmaseda', true, '2025-02-18'),
+(NEXT VALUE FOR USERS_SEQ, 'adominguez', '$2a$10$rty5678rty5678rty567rty5678rty5678rty5678rty567', 'adominguez@example.com', 'Ana', 'Domínguez', 'Sánchez', false, '2025-01-28'),
+(NEXT VALUE FOR USERS_SEQ, 'ldiaz', '$2a$10$zxc9876zxc9876zxc987zxc9876zxc9876zxc9876zxc987', 'ldiaz@example.com', 'Luis', 'Díaz', 'Cáceres', true, '2025-02-05'),
+(NEXT VALUE FOR USERS_SEQ, 'scastro', '$2a$10$vbn1234vbn1234vbn123vbn1234vbn1234vbn1234vbn123', 'scastro@example.com', 'Sofía', 'Castro', 'Aliseda', true, '2025-02-12'),
+(NEXT VALUE FOR USERS_SEQ, 'mortega', '$2a$10$asd4567asd4567asd456asd4567asd4567asd4567asd456', 'mortega@example.com', 'Manuel', 'Ortega', 'Ceclavín', false, '2025-02-14'),
+(NEXT VALUE FOR USERS_SEQ, 'ejimenez', '$2a$10$fgh6789fgh6789fgh678fgh6789fgh6789fgh6789fgh678', 'ejimenez@example.com', 'Elena', 'Jiménez', 'Huelva', true, '2025-02-19');
 
 
 INSERT INTO USER_ROLES (ID_USER, ID_ROL) VALUES
