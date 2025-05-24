@@ -18,5 +18,7 @@ public interface ProductoService {
 	void deleteProducto(Long idProducto);
 	
 	Producto updateProducto(Producto producto);
+	
+	void reducirStock(Long productoId, int cantidad);
 
 }

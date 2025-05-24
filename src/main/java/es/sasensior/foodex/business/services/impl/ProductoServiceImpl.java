@@ -44,6 +44,25 @@ public class ProductoServiceImpl implements ProductoService {
     }
     
     /**
+     * Método para reducir la cantidad de stock de un producto.
+     * @param productoId es el id del producto que queremos modificar.
+     * @param cantidad es la cantidad que le vamos a restar.
+     */
+    @Override
+    @Transactional
+    public void reducirStock(Long productoId, int cantidad) {
+        ProductoPL producto = productoRepository.findById(productoId)
+            .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado"));
+        
+        if (producto.getStock() < cantidad) {
+            throw new IllegalStateException("Stock insuficiente para el producto: " + producto.getNombre());
+        }
+        
+        producto.setStock(producto.getStock() - cantidad);
+        productoRepository.save(producto);
+    }
+    
+    /**
      * Obtiene los productos pertenecientes a una categoría específica.
      *
      * @param idCategoria ID de la categoría para filtrar productos

@@ -20,6 +20,7 @@ import es.sasensior.foodex.business.model.dto.CompraDTO;
 import es.sasensior.foodex.business.model.dto.UsuarioDTO;
 import es.sasensior.foodex.business.services.CarritoService;
 import es.sasensior.foodex.business.services.CompraService;
+import es.sasensior.foodex.business.services.ProductoService;
 import es.sasensior.foodex.integration.dao.CompraPL;
 import es.sasensior.foodex.integration.dao.DatosContactoPL;
 import es.sasensior.foodex.integration.dao.DireccionPL;
@@ -41,6 +42,7 @@ import lombok.Getter;
 public class CompraServiceImpl implements CompraService {
     
     private final CompraRepository compraRepository;
+    private final ProductoService productoService;
     private final CarritoService carritoService;
     private final ItemCarritoRepository itemCarritoRepository;
     private final DozerBeanMapper mapper;
@@ -54,11 +56,12 @@ public class CompraServiceImpl implements CompraService {
      * @param itemCarritoRepository Repositorio para operaciones con items del carrito
      */
     public CompraServiceImpl(CompraRepository compraRepository, DozerBeanMapper mapper, 
-                           CarritoService carritoService, ItemCarritoRepository itemCarritoRepository) {
+                           CarritoService carritoService, ItemCarritoRepository itemCarritoRepository, ProductoService productoService) {
         this.compraRepository = compraRepository;
         this.carritoService = carritoService;
         this.mapper = mapper;
         this.itemCarritoRepository = itemCarritoRepository;
+        this.productoService = productoService;
     }
 
     /**
@@ -160,11 +163,20 @@ public class CompraServiceImpl implements CompraService {
         compraPL.setEstado(EstadoCompra.PAGADA);
         
         List<ItemCarrito> itemsCarrito = carrito.get().getItemsCarrito();
+        
+        for (ItemCarrito item : itemsCarrito) {
+            productoService.reducirStock(
+                item.getProducto().getId(), 
+                item.getCantidad()
+            );
+        }
+        
         Double montoTotal = itemsCarrito.stream()
                 .mapToDouble(item -> item.getProducto().getPrecio() * item.getCantidad())
                 .sum();
         compraPL.setMonto(montoTotal);
 
+        
         this.compraRepository.save(compraPL);
         this.itemCarritoRepository.deleteAllByCarrito(carrito.get().getId());
         
