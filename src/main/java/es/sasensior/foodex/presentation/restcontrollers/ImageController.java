@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/api/images")
-public class ImageController { //TODO - Refactorizar y mejorar.
+public class ImageController { 
 	
 	@Value("${upload.dir}")
     private String uploadDir;

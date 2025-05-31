@@ -73,24 +73,18 @@ public class AuthController {
         Authentication authentication = null;
 
         try {
-            // Autentica al usuario con el nombre de usuario y contraseña proporcionados
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         } catch(Exception e) {
-            // Si la autenticación falla, registra el error y lanza una excepción con código 401 (Unauthorized)
             logger.error("Error de autenticación para el usuario {}", loginRequest.getUsername());
             throw new PresentationException.Builder(HttpStatus.UNAUTHORIZED, "Credenciales inválidas.")
             .build();
         }
 
-        // Guarda la autenticación en el contexto de seguridad de Spring
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        // Genera un token JWT para el usuario autenticado
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        // Obtiene los detalles del usuario autenticado
         UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
 
-        // Extrae los roles del usuario y los convierte en una lista de strings
         List<String> roles = usuarioPL.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
@@ -98,7 +92,6 @@ public class AuthController {
         usuarioPL.setFechaUltimoLogin(new Date());
         usuarioPLService.guardarEstado(usuarioPL);
         
-        // Devuelve el token JWT y los datos del usuario autenticado en la respuesta
         JwtResponse jwtResponse = new JwtResponse(jwt, usuarioPL.getId(), usuarioPL.getUsername(), usuarioPL.getEmail(), roles);
           return ResponseEntity.ok(new ApiResponseBody.Builder("Autenticación exitosa.")
         		  .status(ResponseStatus.SUCCESS)
@@ -111,7 +104,6 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody SignupRequest signupRequest, BindingResult bindingResult) {
         List<ErrorDetail> errors = new ArrayList<>();
 
-        // Validar que los campos estén bien
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(fieldError -> {
                 errors.add(new ErrorDetail(fieldError.getField(), fieldError.getDefaultMessage()));
@@ -119,7 +111,6 @@ public class AuthController {
             
         }
 
-        // Verificar si el email y el nombre de usuario ya están registrados
         if (usuarioPLService.existsUserByEmail(signupRequest.getEmail())) {
             errors.add(new ErrorDetail("email", "Ese correo electrónico ya está registrado en nuestro sistema."));
         }
@@ -134,7 +125,6 @@ public class AuthController {
                 .build();
         }
 
-        // Crear el usuario
         UsuarioPL usuario = new UsuarioPL();
         usuario.setUsername(signupRequest.getUsername());
         usuario.setEmail(signupRequest.getEmail());
@@ -156,15 +146,12 @@ public class AuthController {
                 .build();
         }
 
-        // Guardar el usuario primero
-        this.usuarioPLService.register(usuario); // Aquí se guarda el usuario en la base de datos
+        this.usuarioPLService.register(usuario);
         
-        // Crear el carrito de compras con el usuario ya guardado
         CarritoCompraPL carritoCompra = new CarritoCompraPL();
-        carritoCompra.setUsuario(usuario); // Aquí ya existe en la base de datos
+        carritoCompra.setUsuario(usuario); 
         carritoCompra.setItemsCarrito(new ArrayList<>());
         
-        // Guardar el carrito
         this.carritoRepository.save(carritoCompra);
 
         return ResponseEntity.ok(new ApiResponseBody.Builder("Registro exitoso.")

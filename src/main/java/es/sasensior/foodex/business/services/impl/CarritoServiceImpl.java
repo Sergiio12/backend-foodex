@@ -26,8 +26,6 @@ import lombok.Getter;
  * Implementación del servicio para la gestión del carrito de compra.
  * Proporciona funcionalidades para manipular el carrito de compra de un usuario,
  * incluyendo añadir, modificar y eliminar productos.
- * 
- * @Service Indica que esta clase es un componente de servicio de Spring.
  */
 @Getter
 @Service

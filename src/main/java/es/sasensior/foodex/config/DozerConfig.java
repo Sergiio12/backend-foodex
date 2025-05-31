@@ -1,4 +1,4 @@
-package es.sasensior.foodex.config;
+ package es.sasensior.foodex.config;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.context.annotation.Bean;

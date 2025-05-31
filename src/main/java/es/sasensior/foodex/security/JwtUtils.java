@@ -31,12 +31,14 @@ public class JwtUtils {
     @Value("${foodex.app.jwt-expiration-ms}")
     private int jwtExpirationMs;
 
+    /**
+     * Genera un JWT.
+     * @param authentication
+     * @return token.
+     */
     public String generateJwtToken(Authentication authentication) {
-
         UsuarioPL usuarioPL = (UsuarioPL) authentication.getPrincipal();
-
         List<String> roles = usuarioPL.getAuthorities().stream().map(x -> x.toString()).toList();
-        
         String nombreCompleto = usuarioPL.getFirstName() + " " + usuarioPL.getLastName();
 
         return Jwts.builder()

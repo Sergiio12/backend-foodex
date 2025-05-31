@@ -34,8 +34,6 @@ import lombok.Getter;
  * Implementación del servicio para la gestión de compras.
  * Proporciona funcionalidades para realizar, consultar y eliminar compras,
  * así como para convertir entre entidades de persistencia, modelos de negocio y DTOs.
- * 
- * @Service Indica que esta clase es un componente de servicio de Spring.
  */
 @Getter
 @Service

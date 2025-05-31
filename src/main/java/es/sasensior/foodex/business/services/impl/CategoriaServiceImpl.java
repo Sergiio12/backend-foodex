@@ -20,8 +20,6 @@ import lombok.Getter;
 /**
  * Implementación del servicio para la gestión de categorías de productos.
  * Proporciona funcionalidades CRUD para las categorías de productos.
- * 
- * @Service Indica que esta clase es un componente de servicio de Spring.
  */
 @Getter
 @Service

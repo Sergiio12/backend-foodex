@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
  * Implementación del servicio para la gestión de productos.
  * Proporciona funcionalidades CRUD para productos y métodos para buscar productos por categoría.
  * 
- * @Service Indica que esta clase es un componente de servicio de Spring.
  * @RequiredArgsConstructor Genera un constructor con los campos finales para inyección de dependencias
  */
 @RequiredArgsConstructor

@@ -66,15 +66,22 @@ public class SecurityConfig {
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
-    
+
+    /**
+     * Configuración de CORS para dominios dinámicos de Ngrok y localhost en desarrollo.
+     * Se utiliza allowedOriginPatterns para aceptar cualquier subdominio de ngrok-free.app.
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "https://*.trycloudflare.com",
+            "http://localhost:4200"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -85,28 +92,26 @@ public class SecurityConfig {
      */
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-        http
+        return http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth ->
-                auth.requestMatchers("/api/auth/signin/**").permitAll()
-                    .requestMatchers("/api/auth/signup/**").permitAll()
-                    .requestMatchers("/api/images/**").permitAll()
-                    .requestMatchers("/favicon.ico").permitAll()
-                    .requestMatchers("/WEB-INF/**").permitAll()
-                    .requestMatchers("/img/**", "/css/**", "/js/**").permitAll()
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("/h2-console/**").permitAll()
-                    .anyRequest().authenticated()
-            );
-
-        http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
+            .headers(headers -> headers.frameOptions(frameOpts -> frameOpts.sameOrigin()))
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/signin/**").permitAll()
+                .requestMatchers("/api/auth/signup/**").permitAll()
+                .requestMatchers("/api/images/**").permitAll()
+                .requestMatchers("/favicon.ico").permitAll()
+                .requestMatchers("/WEB-INF/**").permitAll()
+                .requestMatchers("/img/**", "/css/**", "/js/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 
     /**
@@ -114,11 +119,9 @@ public class SecurityConfig {
      * Usa BCrypt para verificar las contraseñas almacenadas de forma segura.
      */
     private DaoAuthenticationProvider authenticationProvider() {
-
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
-
         return authProvider;
     }
 }

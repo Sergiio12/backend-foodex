@@ -41,9 +41,6 @@ public class ProductoController {
         this.imageService = imageService;
     }
 
-    /**
-     * Obtener todos los productos
-     */
     @GetMapping
     public ResponseEntity<?> getAllProductos() {
         List<Producto> productos = productoService.getAll();
@@ -56,9 +53,6 @@ public class ProductoController {
         );
     }
     
-    /**
-     * Obtener productos por categoría
-     */
     @GetMapping(params = "categoriaId")
     public ResponseEntity<?> getProductosByCategoria(@RequestParam Long categoriaId) {
         List<Producto> productos;
@@ -76,10 +70,6 @@ public class ProductoController {
         );
     }
 
-
-    /**
-     * Obtener un producto por ID
-     */
     @GetMapping(params = "id")
     public ResponseEntity<?> getProductoById(@RequestParam Long id) {
     	Optional<Producto> producto;
@@ -96,9 +86,6 @@ public class ProductoController {
                 .build());
     }
 
-    /**
-     * Crear un nuevo producto
-     */
     @PostMapping
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         Producto createdProducto;
@@ -118,11 +105,6 @@ public class ProductoController {
         );
     }
     
-    /**
-     * Método para eliminar un producto.
-     * @param id Id del producto a eliminar.
-     * @return la respuesta.
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseBody> deleteProducto(@PathVariable Long id) {
         try {
@@ -142,9 +124,6 @@ public class ProductoController {
         }
     }
 
-    /**
-     * Actualizar un producto existente
-     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
 
